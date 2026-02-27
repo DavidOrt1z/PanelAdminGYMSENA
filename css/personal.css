@@ -1,0 +1,229 @@
+/* ==================== PERSONAL.CSS ====================
+   Estilos específicos para la página de Personal
+*/
+
+.personal-section {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.section-header h1 {
+    color: #FFFFFF;
+    font-size: 28px;
+    margin: 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.btn-secondary {
+    background: #243647;
+    color: #91ADC9;
+    border: 1px solid rgba(145, 173, 201, 0.2);
+}
+
+.btn-secondary:hover {
+    background: #2d4556;
+    border-color: #91ADC9;
+}
+
+.btn-secondary img {
+    filter: brightness(0) saturate(100%) invert(81%) sepia(14%) saturate(396%) hue-rotate(189deg) brightness(97%) contrast(91%);
+}
+
+.btn-danger {
+    background: #D32F2F;
+    color: #FFFFFF;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}
+
+.btn-danger img {
+    filter: brightness(0) invert(1);
+}
+
+.btn-primary {
+    background: #1273D4;
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background: #0a56a8;
+    box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+}
+
+.section-card {
+    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    border-radius: 10px;
+    padding: 24px;
+    overflow-x: auto;
+}
+
+/* Badge de estado */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-active {
+    background: rgba(76, 175, 80, 0.15);
+    color: #81C784;
+}
+
+.badge-inactive {
+    background: rgba(211, 47, 47, 0.15);
+    color: #FF6B6B;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #243647;
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    border-radius: 10px;
+    padding: 0;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(145, 173, 201, 0.2);
+}
+
+.modal-header h2 {
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #91ADC9;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    border-radius: 6px;
+    background: #1a2a35;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #1273D4;
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid rgba(145, 173, 201, 0.2);
+}
+
+.btn-secondary {
+    background: #243647;
+    color: #91ADC9;
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYM SENA - Dashboard Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="assets/images/logo.png" alt="GYM SENA Logo" class="sidebar-logo">
+            </div>
+            <h2>GYM SENA</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <img src="assets/icons/dashboard.svg" alt="Dashboard" class="nav-icon">
+                <span class="text">Dashboard</span>
+            </a>
+            <a href="#usuarios" class="nav-item" data-section="usuarios">
+                <img src="assets/icons/usuarios.svg" alt="Usuarios" class="nav-icon">
+                <span class="text">Usuarios</span>
+            </a>
+            <a href="#reservas" class="nav-item" data-section="reservas">
+                <img src="assets/icons/reservas.svg" alt="Reservas" class="nav-icon">
+                <span class="text">Reservas</span>
+            </a>
+            <a href="#horarios" class="nav-item" data-section="horarios">
+                <img src="assets/icons/horarios.svg" alt="Horarios" class="nav-icon">
+                <span class="text">Horarios</span>
+            </a>
+            <a href="#personal" class="nav-item" data-section="personal">
+                <img src="assets/icons/personal.svg" alt="Personal" class="nav-icon">
+                <span class="text">Personal</span>
+            </a>
+            <a href="#equipamiento" class="nav-item" data-section="equipamiento">
+                <img src="assets/icons/equipamiento.svg" alt="Equipamiento" class="nav-icon">
+                <span class="text">Equipamiento</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="admin-avatar">A</div>
+                <div class="admin-details">
+                    <span id="adminName">Administrador</span>
+                    <span id="adminEmail">admin@gym.com</span>
+                </div>
+            </div>
+            <button id="logoutBtn" class="logout-btn"><img src="assets/icons/logout.svg" alt="Salir" class="logout-icon"> Cerrar Sesión</button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Bienvenido al panel de administración</p>
+            </div>
+            <div class="top-bar-right">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar...">
+                    <img src="assets/icons/search.svg" alt="Buscar" class="search-icon">
+                </div>
+            </div>
+        </header>
+        
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h3>Usuarios Activos</h3>
+                            <img src="assets/icons/usuarios.svg" alt="Usuarios" class="metric-icon">
+                        </div>
+                        <div class="metric-value" id="metricUsers">0</div>
+                        <p class="metric-change">+0% esta semana</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h3>Reservas Hoy</h3>
+                            <img src="assets/icons/reservas.svg" alt="Reservas" class="metric-icon">
+                        </div>
+                        <div class="metric-value" id="metricReservations">0</div>
+                        <p class="metric-change">Administrar reservas</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h3>Horarios Disponibles</h3>
+                            <img src="assets/icons/horarios.svg" alt="Horarios" class="metric-icon">
+                        </div>
+                        <div class="metric-value" id="metricSlots">0</div>
+                        <p class="metric-change">Crear nuevos horarios</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <h3>Equipamiento</h3>
+                            <img src="assets/icons/equipamiento.svg" alt="Equipamiento" class="metric-icon">
+                        </div>
+                        <div class="metric-value" id="metricEquipment">0</div>
+                        <p class="metric-change">En mantenimiento: 0</p>
+                    </div>
+                </div>
+                
+                <div class="content-grid">
+                    <div class="card">
+                        <h3>Actividad Reciente</h3>
+                        <div class="activity-list" id="activityList">
+                            <p style="color: #999; text-align: center; padding: 20px;">Cargando actividad...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Accesos Rápidos</h3>
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="navigateTo('usuarios')">
+                                <img src="assets/icons/add.svg" alt="Nuevo" class="quick-icon"> Nuevo Usuario
+                            </button>
+                            <button class="quick-btn" onclick="navigateTo('reservas')">
+                                <img src="assets/icons/reservas.svg" alt="Reservas" class="quick-icon"> Ver Reservas
+                            </button>
+                            <button class="quick-btn" onclick="navigateTo('horarios')">
+                                <img src="assets/icons/horarios.svg" alt="Horarios" class="quick-icon"> Crear Horario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Usuarios Section -->
+            <section id="usuarios-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Usuarios</h2>
+                    <button class="btn btn-primary" onclick="openUserModal()">+ Nuevo Usuario</button>
+                </div>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="usersTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 20px;">Cargando usuarios...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Reservas Section -->
+            <section id="reservas-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Reservas</h2>
+                    <select id="filterReservations" class="btn" onchange="filterReservations(this.value)">
+                        <option value="">Todas las reservas</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="confirmed">Confirmadas</option>
+                        <option value="completed">Completadas</option>
+                        <option value="cancelled">Canceladas</option>
+                    </select>
+                </div>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="reservationsTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Fecha</th>
+                                    <th>Horario</th>
+                                    <th>Estado</th>
+                                    <th>QR</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reservationsTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 20px;">Cargando reservas...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Horarios Section -->
+            <section id="horarios-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Horarios</h2>
+                    <button class="btn btn-primary" onclick="openSlotModal()">+ Crear Horario</button>
+                </div>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="slotsTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Día</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Capacidad</th>
+                                    <th>Reservadas</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="slotsTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 20px;">Cargando horarios...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Personal Section -->
+            <section id="personal-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Personal</h2>
+                    <button class="btn btn-primary" onclick="openStaffModal()">+ Agregar Personal</button>
+                </div>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="staffTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Posición</th>
+                                    <th>Email</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 20px;">Cargando personal...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Equipamiento Section -->
+            <section id="equipamiento-section" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Equipamiento</h2>
+                    <button class="btn btn-primary" onclick="openEquipmentModal()">+ Nuevo Equipo</button>
+                </div>
+                <div class="card">
+                    <div class="table-responsive">
+                        <table id="equipmentTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Estado</th>
+                                    <th>Última Revisión</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equipmentTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 20px;">Cargando equipamiento...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Modal para Usuarios -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h2>Nuevo Usuario</h2>
+            <form id="userForm">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select required>
+                        <option value="user">Usuario</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Crear Usuario</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

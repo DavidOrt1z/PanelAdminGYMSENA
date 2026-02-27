@@ -1,0 +1,4 @@
+# Variables de entorno - NO subir al repositorio
+.env
+.env.local
+.env.production
