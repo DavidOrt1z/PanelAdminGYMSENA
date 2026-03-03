@@ -144,11 +144,11 @@ function confirmDeleteSlot(slotId) {
 async function deleteSlot(slotId) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/slots?id=eq.${slotId}`,
+            `${window.SUPABASE_URL}/rest/v1/slots?id=eq.${slotId}`,
             {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }

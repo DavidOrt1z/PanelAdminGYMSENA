@@ -88,11 +88,11 @@ function changeStatus(reservationId) {
 async function updateReservationStatus(reservationId, newStatus) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`,
+            `${window.SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`,
             {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ status: newStatus })

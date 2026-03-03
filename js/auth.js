@@ -2,14 +2,15 @@
 
 async function adminLogin(email, password) {
     try {
+        await window.configReady;
         console.log('Iniciando login para:', email);
         
         // Paso 1: Autenticación en Supabase Auth
-        const authResponse = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        const authResponse = await fetch(`${window.SUPABASE_URL}/auth/v1/token?grant_type=password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY
+                'apikey': window.SUPABASE_ANON_KEY
             },
             body: JSON.stringify({
                 email,
@@ -33,11 +34,11 @@ async function adminLogin(email, password) {
 
         // Paso 2: Obtener datos del usuario de la tabla public.users
         const userResponse = await fetch(
-            `${SUPABASE_URL}/rest/v1/users?email=eq.${email}&select=*`,
+            `${window.SUPABASE_URL}/rest/v1/users?email=eq.${email}&select=*`,
             {
                 method: 'GET',
                 headers: {
-                    'apikey': SUPABASE_KEY,
+                    'apikey': window.SUPABASE_ANON_KEY,
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 }

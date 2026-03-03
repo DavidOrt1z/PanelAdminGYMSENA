@@ -120,11 +120,11 @@ function confirmDeleteStaff(staffId) {
 async function deleteStaff(staffId) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/staff?id=eq.${staffId}`,
+            `${window.SUPABASE_URL}/rest/v1/staff?id=eq.${staffId}`,
             {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }

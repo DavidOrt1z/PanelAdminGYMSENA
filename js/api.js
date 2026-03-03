@@ -1,9 +1,11 @@
 // ==================== FUNCIONES DE API ====================
 
-const getAuthHeader = () => {
+// Espera a que config.js cargue las credenciales antes de usarlas
+const getAuthHeader = async () => {
+    await window.configReady;
     const token = localStorage.getItem('adminToken');
     return {
-        'apikey': SUPABASE_ANON_KEY,
+        'apikey': window.SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
     };
@@ -14,10 +16,10 @@ const getAuthHeader = () => {
 async function getUsers() {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/users`,
+            `${window.SUPABASE_URL}/rest/v1/users`,
             {
                 method: 'GET',
-                headers: getAuthHeader()
+                headers: await getAuthHeader()
             }
         );
 
@@ -32,10 +34,10 @@ async function getUsers() {
 async function createUser(userData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/users`,
+            `${window.SUPABASE_URL}/rest/v1/users`,
             {
                 method: 'POST',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(userData)
             }
         );
@@ -51,10 +53,10 @@ async function createUser(userData) {
 async function updateUser(userId, userData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/users?id=eq.${userId}`,
+            `${window.SUPABASE_URL}/rest/v1/users?id=eq.${userId}`,
             {
                 method: 'PATCH',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(userData)
             }
         );
@@ -71,7 +73,7 @@ async function updateUser(userId, userData) {
 
 async function getReservations(filter = null) {
     try {
-        let url = `${SUPABASE_URL}/rest/v1/reservations`;
+        let url = `${window.SUPABASE_URL}/rest/v1/reservations`;
 
         if (filter && filter !== '') {
             url += `?status=eq.${filter}`;
@@ -79,7 +81,7 @@ async function getReservations(filter = null) {
 
         const response = await fetch(url, {
             method: 'GET',
-            headers: getAuthHeader()
+            headers: await getAuthHeader()
         });
 
         if (!response.ok) throw new Error('Error fetching reservations');
@@ -93,10 +95,10 @@ async function getReservations(filter = null) {
 async function updateReservationStatus(reservationId, status) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`,
+            `${window.SUPABASE_URL}/rest/v1/reservations?id=eq.${reservationId}`,
             {
                 method: 'PATCH',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify({ status })
             }
         );
@@ -118,10 +120,10 @@ async function cancelReservation(reservationId) {
 async function getSlots() {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/slots`,
+            `${window.SUPABASE_URL}/rest/v1/slots`,
             {
                 method: 'GET',
-                headers: getAuthHeader()
+                headers: await getAuthHeader()
             }
         );
 
@@ -136,10 +138,10 @@ async function getSlots() {
 async function createSlot(slotData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/slots`,
+            `${window.SUPABASE_URL}/rest/v1/slots`,
             {
                 method: 'POST',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(slotData)
             }
         );
@@ -155,10 +157,10 @@ async function createSlot(slotData) {
 async function updateSlot(slotId, slotData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/slots?id=eq.${slotId}`,
+            `${window.SUPABASE_URL}/rest/v1/slots?id=eq.${slotId}`,
             {
                 method: 'PATCH',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(slotData)
             }
         );
@@ -174,10 +176,10 @@ async function updateSlot(slotId, slotData) {
 async function deleteSlot(slotId) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/slots?id=eq.${slotId}`,
+            `${window.SUPABASE_URL}/rest/v1/slots?id=eq.${slotId}`,
             {
                 method: 'DELETE',
-                headers: getAuthHeader()
+                headers: await getAuthHeader()
             }
         );
 
@@ -194,10 +196,10 @@ async function deleteSlot(slotId) {
 async function getStaff() {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/staff`,
+            `${window.SUPABASE_URL}/rest/v1/staff`,
             {
                 method: 'GET',
-                headers: getAuthHeader()
+                headers: await getAuthHeader()
             }
         );
 
@@ -212,10 +214,10 @@ async function getStaff() {
 async function createStaff(staffData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/staff`,
+            `${window.SUPABASE_URL}/rest/v1/staff`,
             {
                 method: 'POST',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(staffData)
             }
         );
@@ -231,10 +233,10 @@ async function createStaff(staffData) {
 async function updateStaff(staffId, staffData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/staff?id=eq.${staffId}`,
+            `${window.SUPABASE_URL}/rest/v1/staff?id=eq.${staffId}`,
             {
                 method: 'PATCH',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(staffData)
             }
         );
@@ -252,10 +254,10 @@ async function updateStaff(staffId, staffData) {
 async function getEquipment() {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/equipment`,
+            `${window.SUPABASE_URL}/rest/v1/equipment`,
             {
                 method: 'GET',
-                headers: getAuthHeader()
+                headers: await getAuthHeader()
             }
         );
 
@@ -270,10 +272,10 @@ async function getEquipment() {
 async function createEquipment(equipmentData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/equipment`,
+            `${window.SUPABASE_URL}/rest/v1/equipment`,
             {
                 method: 'POST',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(equipmentData)
             }
         );
@@ -289,10 +291,10 @@ async function createEquipment(equipmentData) {
 async function updateEquipment(equipmentId, equipmentData) {
     try {
         const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/equipment?id=eq.${equipmentId}`,
+            `${window.SUPABASE_URL}/rest/v1/equipment?id=eq.${equipmentId}`,
             {
                 method: 'PATCH',
-                headers: getAuthHeader(),
+                headers: await getAuthHeader(),
                 body: JSON.stringify(equipmentData)
             }
         );

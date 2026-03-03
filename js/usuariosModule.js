@@ -94,6 +94,7 @@ function closeUserModal() {
 
 async function submitUserForm(e) {
     e.preventDefault();
+    await window.configReady;
     
     const name = document.getElementById('userName').value.trim();
     const email = document.getElementById('userEmail').value.trim();
@@ -115,13 +116,13 @@ async function submitUserForm(e) {
         if (currentUserId) {
             // Editar usuario existente
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/users?id=eq.${currentUserId}`,
+                `${window.SUPABASE_URL}/rest/v1/users?id=eq.${currentUserId}`,
                 {
                     method: 'PATCH',
                     headers: {
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY
+                        'apikey': window.SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({ 
                         full_name: name, 
@@ -139,13 +140,13 @@ async function submitUserForm(e) {
         } else {
             // Crear nuevo usuario
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/users`,
+                `${window.SUPABASE_URL}/rest/v1/users`,
                 {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json',
-                        'apikey': SUPABASE_ANON_KEY
+                        'apikey': window.SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({ 
                         full_name: name, 
@@ -184,12 +185,13 @@ function confirmDeleteUser(userId) {
 
 async function deleteUser(userId) {
     try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/users?id=eq.${userId}`, {
+        await window.configReady;
+        const response = await fetch(`${window.SUPABASE_URL}/rest/v1/users?id=eq.${userId}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                 'Content-Type': 'application/json',
-                'apikey': SUPABASE_ANON_KEY
+                'apikey': window.SUPABASE_ANON_KEY
             }
         });
         
