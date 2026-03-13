@@ -349,6 +349,17 @@ form {
     }
 }
 
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
 @keyframes slideUp {
     from {
         transform: translateY(20px);

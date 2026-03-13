@@ -17,9 +17,9 @@ async function loadUsers() {
         const rows = users.map(u => `
             <tr>
                 <td>${u.id.substring(0, 8)}...</td>
-                <td>${u.full_name || 'N/A'}</td>
-                <td>${u.email}</td>
-                <td><span class="badge badge-${u.role}">${u.role}</span></td>
+                <td>${u.nombre_completo || 'N/A'}</td>
+                <td>${u.correo_electronico}</td>
+                <td><span class="badge badge-${u.rol}">${u.rol}</span></td>
                 <td><span class="badge badge-active">Activo</span></td>
                 <td>
                     <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editUser('${u.id}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
@@ -49,12 +49,12 @@ function openUserModal(userId = null) {
         title.textContent = 'Editar Usuario';
         const user = allUsers.find(u => u.id === userId);
         if (user) {
-            document.getElementById('userName').value = user.full_name || '';
-            document.getElementById('userEmail').value = user.email || '';
+            document.getElementById('userName').value = user.nombre_completo || '';
+            document.getElementById('userEmail').value = user.correo_electronico || '';
             document.getElementById('userEmail').disabled = true; // No permitir cambiar email
             
             // Actualizar custom select
-            const role = user.role || 'user';
+            const role = user.rol || 'user';
             hiddenInput.value = role;
             
             // Actualizar display
@@ -125,9 +125,9 @@ async function submitUserForm(e) {
                         'apikey': window.SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({ 
-                        full_name: name, 
-                        role,
-                        updated_at: new Date().toISOString()
+                        nombre_completo: name, 
+                        rol,
+                        fecha_actualizacion: new Date().toISOString()
                     })
                 }
             );
@@ -149,10 +149,10 @@ async function submitUserForm(e) {
                         'apikey': window.SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({ 
-                        full_name: name, 
-                        email, 
-                        role,
-                        created_at: new Date().toISOString()
+                        nombre_completo: name, 
+                        correo_electronico: email, 
+                        rol,
+                        fecha_creacion: new Date().toISOString()
                     })
                 }
             );
@@ -166,7 +166,12 @@ async function submitUserForm(e) {
         
         closeUserModal();
         await loadUsers();
-        showSuccess('Usuario guardado correctamente');
+        
+        if (currentUserId) {
+            showSuccess('Usuario editado correctamente');
+        } else {
+            showSuccess('Usuario creado correctamente');
+        }
     } catch (error) {
         console.error('❌ Error guardando usuario:', error);
         showError('Error al guardar usuario: ' + error.message);
@@ -216,16 +221,16 @@ function searchUsers(query) {
     }
     
     const filtered = allUsers.filter(u => 
-        u.full_name.toLowerCase().includes(query.toLowerCase()) ||
-        u.email.toLowerCase().includes(query.toLowerCase())
+        u.nombre_completo.toLowerCase().includes(query.toLowerCase()) ||
+        u.correo_electronico.toLowerCase().includes(query.toLowerCase())
     );
     
     const rows = filtered.map(u => `
         <tr>
             <td>${u.id.substring(0, 8)}...</td>
-            <td>${u.full_name || 'N/A'}</td>
-            <td>${u.email}</td>
-            <td><span class="badge badge-${u.role}">${u.role}</span></td>
+            <td>${u.nombre_completo || 'N/A'}</td>
+            <td>${u.correo_electronico}</td>
+            <td><span class="badge badge-${u.rol}">${u.rol}</span></td>
             <td><span class="badge badge-active">Activo</span></td>
             <td>
                 <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editUser('${u.id}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
@@ -256,15 +261,27 @@ function showError(msg) {
             animation: slideIn 0.3s ease-out;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             font-weight: 500;
+            border-left: 4px solid #b71c1c;
+            font-size: 14px;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         `;
         document.body.appendChild(notification);
     }
-    notification.textContent = msg;
+    
+    const iconHtml = '<img src="assets/icons/error.svg" style="width: 20px; height: 20px; flex-shrink: 0; filter: brightness(0) invert(1) saturate(2);" />';
+    notification.innerHTML = iconHtml + '<span>' + msg + '</span>';
     notification.style.display = 'block';
+    notification.style.animation = 'slideIn 0.3s ease-out';
     
     setTimeout(() => {
-        notification.style.display = 'none';
-    }, 4000);
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 300);
+    }, 4500);
 }
 
 function showSuccess(msg) {
@@ -286,15 +303,27 @@ function showSuccess(msg) {
             animation: slideIn 0.3s ease-out;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             font-weight: 500;
+            border-left: 4px solid #45a049;
+            font-size: 14px;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         `;
         document.body.appendChild(notification);
     }
-    notification.textContent = msg;
+    
+    const iconHtml = '<img src="assets/icons/exito.svg" style="width: 20px; height: 20px; flex-shrink: 0; filter: brightness(0) invert(1) saturate(1);" />';
+    notification.innerHTML = iconHtml + '<span>' + msg + '</span>';
     notification.style.display = 'block';
+    notification.style.animation = 'slideIn 0.3s ease-out';
     
     setTimeout(() => {
-        notification.style.display = 'none';
-    }, 3000);
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 300);
+    }, 3500);
 }
 
 // Event listeners

@@ -5,9 +5,8 @@
 async function loadDashboardData() {
     console.log('📊 Cargando datos del dashboard...');
     try {
-        // Cargar estadísticas
         const stats = await getStatistics();
-        
+
         // Actualizar métricas
         if (document.getElementById('totalUsers')) {
             document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
@@ -18,45 +17,68 @@ async function loadDashboardData() {
         if (document.getElementById('totalSlots')) {
             document.getElementById('totalSlots').textContent = stats.totalSlots || 0;
         }
-        
-        console.log('✅ Dashboard cargado correctamente');
-        
+
         // Cargar actividad reciente
-        await loadRecentActivity();
+        const tbody = document.getElementById('recentActivityTable');
+        if (tbody) {
+            const activities = stats.recentActivity || [];
+            if (activities.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#91ADC9;">Sin actividad reciente</td></tr>';
+            } else {
+                tbody.innerHTML = activities.map(a => {
+                    const fecha = a.fecha ? new Date(a.fecha).toLocaleDateString('es-ES', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    }) : 'N/A';
+                    const tipoBadge = a.tipo === 'Personal'
+                        ? `<span style="background:#1273D4;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`
+                        : `<span style="background:#2E7D32;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`;
+                    return `
+                        <tr>
+                            <td>${tipoBadge}</td>
+                            <td>${a.descripcion || 'N/A'}</td>
+                            <td>${a.usuario || 'N/A'}</td>
+                            <td>${fecha}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        console.log('✅ Dashboard cargado correctamente');
     } catch (error) {
         console.error('❌ Error cargando dashboard:', error);
-        showError('Error al cargar el dashboard');
-    }
-}
-
-async function loadRecentActivity() {
-    console.log('📋 Cargando actividad reciente...');
-    try {
-        // Obtener reservas recientes como actividad
-        const reservations = await getReservations();
-        const tbody = document.getElementById('activityTable');
-        
-        if (!tbody) return;
-        
-        // Mostrar últimas 5 actividades
-        const activities = reservations.slice(0, 5).map(r => `
-            <tr>
-                <td>Reserva</td>
-                <td>${r.user_id}</td>
-                <td>${r.user_email || 'N/A'}</td>
-                <td>${new Date(r.created_at).toLocaleDateString('es-ES')}</td>
-            </tr>
-        `);
-        
-        tbody.innerHTML = activities.join('') || '<tr><td colspan="4" style="text-align:center; color:#91ADC9;">Sin actividad reciente</td></tr>';
-        console.log('✅ Actividad reciente cargada');
-    } catch (error) {
-        console.error('❌ Error cargando actividad:', error);
     }
 }
 
 function showError(message) {
-    alert(message);
+    let notification = document.getElementById('errorNotification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'errorNotification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #D32F2F;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 6px;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-weight: 500;
+            border-left: 4px solid #b71c1c;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        `;
+        document.body.appendChild(notification);
+    }
+    notification.innerHTML = '<span>' + message + '</span>';
+    notification.style.display = 'flex';
+    setTimeout(() => { notification.style.display = 'none'; }, 4500);
 }
 
 // Ejecutar cuando carga la página

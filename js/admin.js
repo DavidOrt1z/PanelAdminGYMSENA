@@ -78,13 +78,13 @@ async function loadRecentActivity() {
         
         // Ordenar por fecha descendente y mostrar últimas 5
         const recent = reservations.sort((a, b) => 
-            new Date(b.created_at) - new Date(a.created_at)
+            new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
         ).slice(0, 5);
         
         activityList.innerHTML = recent.map(r => `
             <div class="activity-item">
                 <div><strong>Reserva #${r.id.substring(0, 8)}</strong></div>
-                <div class="activity-time">${new Date(r.created_at).toLocaleString('es-ES')}</div>
+                <div class="activity-time">${new Date(r.fecha_creacion).toLocaleString('es-ES')}</div>
             </div>
         `).join('');
     } catch (error) {
@@ -106,9 +106,9 @@ async function loadUsers() {
     tbody.innerHTML = users.map(user => `
         <tr>
             <td>${user.id.substring(0, 8)}</td>
-            <td>${user.first_name} ${user.last_name}</td>
-            <td>${user.email}</td>
-            <td>${user.role || 'usuario'}</td>
+            <td>${user.nombre_completo} ${user.apellido || ''}</td>
+            <td>${user.correo_electronico}</td>
+            <td>${user.rol || 'usuario'}</td>
             <td><span class="badge badge-success">Activo</span></td>
             <td>
                 <button class="btn" onclick="editUser('${user.id}')">Editar</button>
@@ -150,7 +150,7 @@ async function loadReservations(filter = null) {
     tbody.innerHTML = reservations.map(res => `
         <tr>
             <td>${res.id.substring(0, 8)}</td>
-            <td>${res.user_id.substring(0, 8)}</td>
+            <td>${res.id_usuario.substring(0, 8)}</td>
             <td>${new Date(res.reservation_date).toLocaleDateString('es-ES')}</td>
             <td>${res.time_slot || 'N/A'}</td>
             <td><span class="badge badge-success">${res.status || 'pendiente'}</span></td>
@@ -186,11 +186,11 @@ async function loadSlots() {
         <tr>
             <td>${slot.id.substring(0, 8)}</td>
             <td>${slot.day_of_week || 'N/A'}</td>
-            <td>${slot.start_time}</td>
-            <td>${slot.capacity}</td>
-            <td>${slot.reserved_count || 0}</td>
+            <td>${slot.hora_inicio}</td>
+            <td>${slot.capacidad}</td>
+            <td>${slot.cantidad_reservada || 0}</td>
             <td>
-                ${slot.capacity - (slot.reserved_count || 0) > 0 
+                ${slot.capacidad - (slot.cantidad_reservada || 0) > 0 
                     ? '<span class="badge badge-success">Disponible</span>' 
                     : '<span class="badge badge-error">Lleno</span>'
                 }

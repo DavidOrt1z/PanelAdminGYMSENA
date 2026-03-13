@@ -12,7 +12,7 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="../gym_app/assets/images/logo.png" alt="GYM SENA" class="sidebar-logo">
+                <img src="assets/images/logo.png" alt="GYM SENA" class="sidebar-logo">
                 <h2>GYM SENA</h2>
             </div>
             
@@ -158,21 +158,13 @@
     <script src="js/api.js"></script>
     <script src="js/horariosModule.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        window.configReady.then(() => {
             const user = checkAdminAuth();
             if (user) {
                 document.getElementById('adminName').textContent = user.name || 'Administrador';
                 document.getElementById('adminEmail').textContent = user.email;
-                document.querySelector('.avatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
-                
-                // Cargar horarios
-                loadSlots();
-            }
-        });
-
-        document.getElementById('logoutBtn')?.addEventListener('click', () => {
-            if (confirm('¿Está seguro de que desea cerrar sesión?')) {
-                logoutAdmin();
+                const av = document.querySelector('.admin-avatar');
+                if (av) av.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
             }
         });
     </script>

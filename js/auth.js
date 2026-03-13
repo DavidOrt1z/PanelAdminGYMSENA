@@ -34,7 +34,7 @@ async function adminLogin(email, password) {
 
         // Paso 2: Obtener datos del usuario de la tabla public.users
         const userResponse = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/users?email=eq.${email}&select=*`,
+            `${window.SUPABASE_URL}/rest/v1/users?correo_electronico=eq.${email}&select=*`,
             {
                 method: 'GET',
                 headers: {
@@ -60,23 +60,23 @@ async function adminLogin(email, password) {
         console.log('Usuario encontrado:', user);
 
         // Paso 3: Verificar que sea administrador
-        if (user.role !== 'admin') {
-            console.error('El usuario no tiene rol admin. Rol actual:', user.role);
+        if (user.rol !== 'admin') {
+            console.error('El usuario no tiene rol admin. Rol actual:', user.rol);
             return {
                 success: false,
                 message: 'No tienes permisos de administrador'
             };
         }
 
-        console.log('✅ Login exitoso para:', user.email);
+        console.log('✅ Login exitoso para:', user.correo_electronico);
         return {
             success: true,
             token: token,
             user: {
                 id: user.id,
-                email: user.email,
-                name: user.full_name || 'Administrador',
-                role: user.role
+                email: user.correo_electronico,
+                name: user.nombre_completo || 'Administrador',
+                role: user.rol
             }
         };
     } catch (error) {

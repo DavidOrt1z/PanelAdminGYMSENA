@@ -1,11 +1,12 @@
 // ⚙️ CONFIGURACIÓN DE SUPABASE - GYM SENA
-// Las credenciales se cargan dinámicamente desde el servidor Node.js (/api/config)
-// para evitar exponerlas en el repositorio público.
+
+// URL base del servidor Node.js (siempre puerto 5500 independiente de Live Server)
+window.API_BASE = 'http://localhost:5500';
 
 // Promesa global que resuelve cuando las credenciales están listas
 window.configReady = (async () => {
     try {
-        const res = await fetch('/api/config');
+        const res = await fetch(`${window.API_BASE}/api/config`);
         if (!res.ok) throw new Error('Fallback a credenciales locales');
         const { supabaseUrl, supabaseKey } = await res.json();
         window.SUPABASE_URL = supabaseUrl;
@@ -20,3 +21,4 @@ window.configReady = (async () => {
 // ✅ Uso en otros módulos:
 //   await window.configReady;
 //   const url = window.SUPABASE_URL;
+//   const api = window.API_BASE;  → 'http://localhost:5500'

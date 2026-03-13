@@ -100,9 +100,25 @@
     color: #81C784;
 }
 
+.almost-full {
+    background: rgba(255, 152, 0, 0.15);
+    color: #FFB74D;
+}
+
 .full {
     background: rgba(211, 47, 47, 0.15);
     color: #FF6B6B;
+}
+
+/* Botones de acción en la tabla */
+.action-btns {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-btn {
+    padding: 6px 10px !important;
 }
 
 /* Modal */
@@ -114,7 +130,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.55);
     animation: fadeIn 0.3s ease;
 }
 
@@ -130,22 +146,26 @@
     border-radius: 10px;
     padding: 0;
     width: 90%;
-    max-width: 500px;
+    max-width: 520px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.3s ease;
+    overflow: hidden;
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 24px;
+    padding: 24px 28px;
     border-bottom: 1px solid rgba(145, 173, 201, 0.2);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .modal-header h2 {
     color: #FFFFFF;
     margin: 0;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .close-btn {
@@ -154,33 +174,66 @@
     color: #91ADC9;
     font-size: 28px;
     cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #FFFFFF;
+}
+
+form {
+    padding: 28px;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 28px;
 }
 
 .form-group label {
     display: block;
     color: #FFFFFF;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.3px;
 }
 
 .form-group input {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    padding: 14px;
+    border: 1px solid rgba(145, 173, 201, 0.3);
     border-radius: 6px;
     background: #1a2a35;
     color: #FFFFFF;
     font-size: 14px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    line-height: 1.5;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: #1273D4;
-    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.1);
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+}
+
+/* Date/time input fix colores en Chromium */
+.form-group input[type="date"],
+.form-group input[type="time"] {
+    color-scheme: dark;
 }
 
 .form-actions {
@@ -188,16 +241,8 @@
     gap: 12px;
     justify-content: flex-end;
     padding-top: 20px;
-    border-top: 1px solid rgba(145, 173, 201, 0.2);
-}
-
-.btn-secondary {
-    background: #243647;
-    color: #91ADC9;
-    border: 1px solid rgba(145, 173, 201, 0.2);
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
+    border-top: 1px solid rgba(145, 173, 201, 0.15);
+    margin-top: 4px;
 }
 
 @keyframes slideUp {
