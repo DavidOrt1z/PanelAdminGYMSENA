@@ -352,4 +352,46 @@ select.btn-primary option {
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .reservas-header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .reservas-header-actions .btn,
+    .reservas-header-actions select {
+        width: 100%;
+    }
+
+    .section-card {
+        padding: 12px;
+    }
+
+    .data-table {
+        min-width: 760px;
+    }
+
+    .actions-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .actions-cell .btn,
+    .actions-cell .status-editor-select {
+        min-width: fit-content;
+    }
+
+    .glass-modal {
+        width: 96vw;
+    }
+
+    .manual-token-box {
+        grid-template-columns: 1fr;
+    }
+
+    #validateManualTokenBtn {
+        width: 100%;
+    }
 }

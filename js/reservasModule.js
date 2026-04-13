@@ -674,6 +674,35 @@ function showSuccess(msg) {
     }, 3500);
 }
 
+function getReservationUserFallback(reservationId) {
+    if (!reservationId) return { name: '', email: '' };
+
+    const match = allReservations.find((reservation) => String(reservation.id || '') === String(reservationId));
+    if (!match) return { name: '', email: '' };
+
+    const rawDisplay = String(match.usuario_display || '').trim();
+    const directEmail = String(match.usuario_email || match.correo_electronico || '').trim();
+
+    let extractedName = rawDisplay;
+    let extractedEmail = directEmail;
+
+    const emailInDisplay = rawDisplay.match(/\(([^)]+@[^)]+)\)/);
+    if (emailInDisplay) {
+        extractedEmail = extractedEmail || emailInDisplay[1].trim();
+        extractedName = rawDisplay.replace(emailInDisplay[0], '').trim();
+    }
+
+    if (!extractedEmail && /@/.test(rawDisplay)) {
+        extractedEmail = rawDisplay;
+        extractedName = '';
+    }
+
+    return {
+        name: extractedName,
+        email: extractedEmail
+    };
+}
+
 async function validateQRToken(token) {
     if (isQrValidationInProgress) return;
 
@@ -716,8 +745,9 @@ async function validateQRToken(token) {
             : 'Horario no disponible';
 
         if (result.found && result.valid) {
-            const userName = escapeHtml(result.usuario_nombre || 'Sin nombre');
-            const userEmail = escapeHtml(result.usuario_email || 'Sin correo');
+            const fallbackUser = getReservationUserFallback(result.reservation_id);
+            const userName = escapeHtml(result.usuario_nombre || fallbackUser.name || 'Sin nombre');
+            const userEmail = escapeHtml(result.usuario_email || fallbackUser.email || 'Sin correo');
 
             openQrResultModal(`
                 <div style="padding:8px 4px 0; text-align:center;">
