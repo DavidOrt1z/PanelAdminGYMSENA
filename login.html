@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYM SENA - Acceso Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="logo-header">
+        <img src="assets/images/logo.png" alt="GYM SENA Logo">
+    </div>
+    
+    <div class="login-page">
+        <div class="login-content">
+            <h1>Iniciar sesión en Panel de Administrador</h1>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Correo electrónico o usuario</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="login-button" id="submitButton">
+                    <span class="text">Iniciar sesión</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © 2026 GYM SENA. Todos los derechos reservados.
+    </div>
+    
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/loginPage.js"></script>
+</body>
+</html>

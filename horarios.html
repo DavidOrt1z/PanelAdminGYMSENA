@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios - GYM SENA Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/horarios.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/images/logo.png" alt="GYM SENA" class="sidebar-logo">
+                <h2>GYM SENA</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item" data-section="dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="usuarios.html" class="nav-item" data-section="usuarios">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span>Usuarios</span>
+                </a>
+                <a href="reservas.html" class="nav-item" data-section="reservas">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Reservas</span>
+                </a>
+                <a href="horarios.html" class="nav-item active" data-section="horarios">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>Horarios</span>
+                </a>
+                <a href="personal.html" class="nav-item" data-section="personal">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Personal</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="admin-info">
+                    <div class="admin-avatar">A</div>
+                    <div class="admin-details">
+                        <span id="adminName">Administrador</span>
+                        <span id="adminEmail">admin@gymsena.com</span>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <img src="assets/icons/logout.svg" class="logout-icon" alt="">
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar horario...">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="content">
+                <section class="horarios-section">
+                    <div class="section-header">
+                        <h1>Gestión de Horarios</h1>
+                        <button class="btn btn-primary" id="addSlotBtn">+ Nuevo Horario</button>
+                    </div>
+
+                    <!-- Tabla de Horarios -->
+                    <div class="section-card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                    <th>Capacidad</th>
+                                    <th>Reservados</th>
+                                    <th>Disponibilidad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="slotsTable">
+                                <tr>
+                                    <td colspan="7">Cargando datos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Crear/Editar Horario -->
+    <div class="modal" id="slotModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nuevo Horario</h2>
+                <button class="close-btn" id="closeSlotModal">&times;</button>
+            </div>
+            <form id="slotForm">
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="slotDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Hora Inicio</label>
+                    <input type="time" id="slotStartTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Hora Fin</label>
+                    <input type="time" id="slotEndTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Capacidad</label>
+                    <input type="number" id="slotCapacity" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelSlotBtn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/confirmDialog.js"></script>
+    <script src="js/horariosModule.js"></script>
+    <script src="js/horariosPage.js"></script>
+</body>
+</html>

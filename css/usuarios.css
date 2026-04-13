@@ -1,0 +1,432 @@
+/* ==================== USUARIOS.CSS ====================
+   Estilos específicos para la página de Usuarios
+*/
+
+.usuarios-section {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.section-header h1 {
+    color: #FFFFFF;
+    font-size: 28px;
+    margin: 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.btn-primary {
+    background-color: #1273D4;
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background-color: #0a56a8;
+    box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    color: #FFFFFF;
+}
+
+.btn-primary:focus,
+.btn-primary:focus-visible,
+.btn-primary:active {
+    color: #FFFFFF;
+}
+
+.btn-secondary {
+    background: #243647;
+    color: #91ADC9;
+    border: 1px solid rgba(145, 173, 201, 0.2);
+}
+
+.btn-secondary:hover {
+    background: #2d4556;
+    border-color: #91ADC9;
+}
+
+.btn-secondary img {
+    filter: brightness(0) saturate(100%) invert(81%) sepia(14%) saturate(396%) hue-rotate(189deg) brightness(97%) contrast(91%);
+}
+
+.btn-danger {
+    background: #D32F2F;
+    color: #FFFFFF;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}
+
+.btn-danger img {
+    filter: brightness(0) invert(1);
+}
+
+.section-card {
+    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    border-radius: 10px;
+    padding: 24px;
+    overflow-x: auto;
+}
+
+/* Tabla de usuarios alineada */
+.usuarios-section .data-table thead th,
+.usuarios-section .data-table tbody td {
+    vertical-align: middle;
+}
+
+.usuarios-section .data-table thead th:nth-child(4),
+.usuarios-section .data-table thead th:nth-child(5),
+.usuarios-section .data-table thead th:nth-child(6),
+.usuarios-section .data-table tbody td:nth-child(4),
+.usuarios-section .data-table tbody td:nth-child(5),
+.usuarios-section .data-table tbody td:nth-child(6) {
+    text-align: center;
+}
+
+.usuarios-section .data-table tbody td:nth-child(6) {
+    white-space: nowrap;
+}
+
+/* Badges de rol */
+.badge-member {
+    background: rgba(18, 115, 212, 0.2);
+    color: #91c7ff;
+}
+
+.badge-admin {
+    background: rgba(142, 68, 173, 0.2);
+    color: #d8a9ff;
+}
+
+/* Badges de estado */
+.badge-active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #7fd885;
+}
+
+.badge-inactive {
+    background: rgba(158, 158, 158, 0.2);
+    color: #c7c7c7;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #243647;
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    border-radius: 10px;
+    padding: 0;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 28px;
+    border-bottom: 1px solid rgba(145, 173, 201, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.modal-header h2 {
+    color: #FFFFFF;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #91ADC9;
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    color: #FFFFFF;
+}
+
+form {
+    padding: 28px;
+}
+
+.form-group {
+    margin-bottom: 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 28px;
+}
+
+.form-group label {
+    display: block;
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+}
+
+.form-group > div {
+    position: relative;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 14px 14px;
+    border: 1px solid rgba(145, 173, 201, 0.3);
+    border-radius: 6px;
+    background: #1a2a35;
+    color: #FFFFFF;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+/* Custom Select */
+.custom-select-wrapper {
+    position: relative;
+}
+
+.custom-select {
+    position: relative;
+}
+
+.select-display {
+    width: 100%;
+    padding: 14px 44px 14px 50px;
+    border: 1px solid rgba(145, 173, 201, 0.3);
+    border-radius: 6px;
+    background: #1a2a35;
+    color: #FFFFFF;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231273D4'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+}
+
+.select-display:hover {
+    border-color: #1273D4;
+}
+
+.select-display:focus {
+    outline: none;
+    border-color: #1273D4;
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+}
+
+.select-display .select-value {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.select-display .select-value svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #1273D4;
+}
+
+.select-display .select-value span {
+    display: flex;
+    align-items: center;
+}
+
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #243647;
+    border: 1px solid rgba(145, 173, 201, 0.3);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.select-options.show {
+    display: block;
+}
+
+.select-option {
+    padding: 14px 16px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(145, 173, 201, 0.1);
+}
+
+.select-option:last-child {
+    border-bottom: none;
+}
+
+.select-option:hover {
+    background: rgba(18, 115, 212, 0.15);
+}
+
+.select-option.selected {
+    background: #1273D4;
+    font-weight: 600;
+}
+
+.select-option svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #FFFFFF;
+}
+
+
+
+.form-group input:hover {
+    border-color: #1273D4;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #1273D4;
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+}
+
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 24px 28px;
+    border-top: 1px solid rgba(145, 173, 201, 0.2);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.form-actions .btn {
+    min-width: 120px;
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .modal-content {
+        width: 95%;
+    }
+}
