@@ -26,6 +26,10 @@ body {
     line-height: 1.6;
 }
 
+body.sidebar-open {
+    overflow: hidden;
+}
+
 /* ==================== SIDEBAR ==================== */
 .sidebar {
     position: fixed;
@@ -225,6 +229,40 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+}
+
+.mobile-menu-btn {
+    display: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(145, 173, 201, 0.35);
+    background: rgba(18, 115, 212, 0.14);
+    color: #d9e9f8;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.mobile-menu-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 14, 19, 0.62);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+    z-index: 1000;
+}
+
+.sidebar-backdrop.show {
+    opacity: 1;
+    visibility: visible;
 }
 
 .top-bar-left h1 {
@@ -663,13 +701,13 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .sidebar {
         position: fixed;
-        left: -280px;
+        left: -292px;
         width: 280px;
         height: 100vh;
-        z-index: 1001;
+        z-index: 1002;
         transition: var(--transition);
     }
     
@@ -684,14 +722,34 @@ body {
     .top-bar {
         position: sticky;
         top: 0;
+        padding: 14px 16px;
+        gap: 12px;
+        justify-content: flex-start;
     }
-    
+
+    .mobile-menu-btn {
+        display: inline-flex;
+    }
+
     .top-bar-right {
         display: none;
     }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .search-box input {
+        width: 100%;
+        min-width: 0;
+    }
     
     .content-area {
-        padding: 20px;
+        padding: 16px;
+    }
+
+    .content {
+        padding: 16px;
     }
     
     .metrics-grid {
@@ -714,6 +772,7 @@ body {
     
     .modal-content {
         width: 95%;
+        padding: 20px;
     }
 }
 
@@ -724,10 +783,6 @@ body {
     
     .sidebar-header {
         padding: 20px;
-    }
-    
-    .search-box input {
-        width: 150px;
     }
     
     .data-table {
@@ -777,7 +832,7 @@ svg.icon {
     box-shadow: 4px 0 24px rgba(0,0,0,0.5);
 }
 
-@media (min-width: 769px) {
+@media (min-width: 901px) {
     .sidebar {
         width: 70px;
     }

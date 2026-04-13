@@ -106,6 +106,78 @@ function logoutAdmin() {
     window.location.href = 'login.html';
 }
 
+function setupMobileSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const topBar = document.querySelector('.top-bar');
+    if (!sidebar || !topBar) return;
+
+    let menuButton = document.getElementById('mobileMenuBtn');
+    if (!menuButton) {
+        menuButton = document.createElement('button');
+        menuButton.type = 'button';
+        menuButton.id = 'mobileMenuBtn';
+        menuButton.className = 'mobile-menu-btn';
+        menuButton.setAttribute('aria-label', 'Abrir menu de navegacion');
+        menuButton.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        `;
+        topBar.prepend(menuButton);
+    }
+
+    let backdrop = document.querySelector('.sidebar-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.className = 'sidebar-backdrop';
+        document.body.appendChild(backdrop);
+    }
+
+    const closeSidebar = () => {
+        sidebar.classList.remove('active');
+        backdrop.classList.remove('show');
+        document.body.classList.remove('sidebar-open');
+    };
+
+    const openSidebar = () => {
+        sidebar.classList.add('active');
+        backdrop.classList.add('show');
+        document.body.classList.add('sidebar-open');
+    };
+
+    menuButton.addEventListener('click', () => {
+        if (sidebar.classList.contains('active')) {
+            closeSidebar();
+            return;
+        }
+        openSidebar();
+    });
+
+    backdrop.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    sidebar.querySelectorAll('.nav-item').forEach((item) => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 900) {
+                closeSidebar();
+            }
+        });
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) {
+            closeSidebar();
+        }
+    });
+}
+
 // ==================== VERIFICACIÓN INICIAL ====================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -135,4 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    setupMobileSidebar();
 });

@@ -305,10 +305,45 @@ app.get('/api/qr-lookup', async (req, res) => {
         const estado = String(reservation.estado || '').toLowerCase().trim();
         const isValidReservation = estado === 'active' || estado === 'completed';
 
-        const userName = user?.nombre_completo
+        let userName = user?.nombre_completo
             || [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim()
             || null;
-        const userEmail = user?.correo_electronico || user?.email || null;
+        let userEmail = user?.correo_electronico || user?.email || null;
+
+        // Fallback: si id_usuario corresponde al UUID de Auth y no hubo match en public.users,
+        // consultar Auth Admin para recuperar email y nombre de metadata.
+        if (userId && (!userName || !userEmail)) {
+            const { data: authUserData, error: authUserError } = await supabase.auth.admin.getUserById(userId);
+            if (!authUserError && authUserData?.user) {
+                const authUser = authUserData.user;
+                const metadata = authUser.user_metadata || {};
+                userName = userName
+                    || metadata.nombre_completo
+                    || metadata.full_name
+                    || metadata.name
+                    || null;
+                userEmail = userEmail || authUser.email || null;
+            }
+        }
+
+        // Fallback adicional: si ya tenemos correo, intentar resolver nombre desde public.users.
+        if (userEmail && !userName) {
+            const { data: userByEmailData, error: userByEmailError } = await supabase
+                .from('users')
+                .select('nombre_completo, nombre, apellido, correo_electronico, email')
+                .or(`correo_electronico.eq.${userEmail},email.eq.${userEmail}`)
+                .order('fecha_creacion', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (!userByEmailError && userByEmailData) {
+                userName = userName
+                    || userByEmailData.nombre_completo
+                    || [userByEmailData.nombre, userByEmailData.apellido].filter(Boolean).join(' ').trim()
+                    || null;
+                userEmail = userEmail || userByEmailData.correo_electronico || userByEmailData.email || null;
+            }
+        }
 
         return res.status(200).json({
             found: true,

@@ -1,4 +1,5 @@
-# Variables de entorno - NO subir al repositorio
+node_modules/
 .env
-.env.local
-.env.production
+.env.*
+*.log
+.DS_Store
