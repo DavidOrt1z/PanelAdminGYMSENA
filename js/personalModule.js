@@ -48,8 +48,10 @@ function applyStaffSearchFilter() {
                 <td>${s.teléfono || 'N/A'}</td>
                 <td><span class="badge ${statusClass}">${statusLabel}</span></td>
                 <td>
-                    <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editStaff('${s.id}')"><img src="assets/icons/edit.svg" alt="Editar" style="width:16px;height:16px;"></button>
-                    <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteStaff('${s.id}')"><img src="assets/icons/delete.svg" alt="Eliminar" style="width:16px;height:16px;"></button>
+                    <div class="staff-actions">
+                        <button class="btn btn-secondary" style="padding:6px 12px;" onclick="editStaff('${s.id}')"><img src="assets/icons/edit.svg" alt="Editar" style="width:16px;height:16px;"></button>
+                        <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteStaff('${s.id}')"><img src="assets/icons/delete.svg" alt="Eliminar" style="width:16px;height:16px;"></button>
+                    </div>
                 </td>
             </tr>
         `;
