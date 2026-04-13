@@ -42,13 +42,20 @@
 }
 
 .btn-primary {
-    background: #1273D4;
+    background-color: #1273D4;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background: #0a56a8;
+    background-color: #0a56a8;
     box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    color: #FFFFFF;
+}
+
+.btn-primary:focus,
+.btn-primary:focus-visible,
+.btn-primary:active {
+    color: #FFFFFF;
 }
 
 .btn-secondary {
@@ -85,6 +92,47 @@
     border-radius: 10px;
     padding: 24px;
     overflow-x: auto;
+}
+
+/* Tabla de usuarios alineada */
+.usuarios-section .data-table thead th,
+.usuarios-section .data-table tbody td {
+    vertical-align: middle;
+}
+
+.usuarios-section .data-table thead th:nth-child(4),
+.usuarios-section .data-table thead th:nth-child(5),
+.usuarios-section .data-table thead th:nth-child(6),
+.usuarios-section .data-table tbody td:nth-child(4),
+.usuarios-section .data-table tbody td:nth-child(5),
+.usuarios-section .data-table tbody td:nth-child(6) {
+    text-align: center;
+}
+
+.usuarios-section .data-table tbody td:nth-child(6) {
+    white-space: nowrap;
+}
+
+/* Badges de rol */
+.badge-member {
+    background: rgba(18, 115, 212, 0.2);
+    color: #91c7ff;
+}
+
+.badge-admin {
+    background: rgba(142, 68, 173, 0.2);
+    color: #d8a9ff;
+}
+
+/* Badges de estado */
+.badge-active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #7fd885;
+}
+
+.badge-inactive {
+    background: rgba(158, 158, 158, 0.2);
+    color: #c7c7c7;
 }
 
 /* Modal */

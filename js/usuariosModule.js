@@ -4,31 +4,146 @@
 
 let currentUserId = null;
 let allUsers = [];
+let currentSearchQuery = '';
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function normalizeRole(role) {
+    const raw = String(role || 'member').toLowerCase().trim();
+    if (raw === 'usuario' || raw === 'user' || raw === 'miembro') return 'member';
+    if (raw === 'administrador') return 'admin';
+    return raw;
+}
+
+function getRoleLabel(role) {
+    const normalized = normalizeRole(role);
+    switch (normalized) {
+        case 'admin':
+            return 'Administrador';
+        case 'member':
+            return 'Usuario';
+        default:
+            return 'Usuario';
+    }
+}
+
+function getRoleBadgeClass(role) {
+    const normalized = normalizeRole(role);
+    return normalized === 'admin' ? 'badge-admin' : 'badge-member';
+}
+
+function normalizeStatus(status) {
+    const raw = String(status || 'active').toLowerCase().trim();
+    const map = {
+        activo: 'active',
+        inactivo: 'inactive',
+        suspendido: 'suspended',
+        bloqueado: 'blocked'
+    };
+    return map[raw] || raw;
+}
+
+function getStatusLabel(status) {
+    const normalized = normalizeStatus(status);
+    switch (normalized) {
+        case 'active':
+            return 'Activo';
+        case 'inactive':
+            return 'Inactivo';
+        case 'suspended':
+            return 'Suspendido';
+        case 'blocked':
+            return 'Bloqueado';
+        default:
+            return 'Activo';
+    }
+}
+
+function getStatusBadgeClass(status) {
+    const normalized = normalizeStatus(status);
+    if (normalized === 'inactive') return 'badge-inactive';
+    if (normalized === 'suspended' || normalized === 'blocked') return 'badge-warning';
+    return 'badge-active';
+}
+
+function normalizeSearchText(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function applyUsersSearchFilter() {
+    const normalizedQuery = normalizeSearchText(currentSearchQuery);
+    if (!normalizedQuery) {
+        renderUsersTable(allUsers, 'No hay usuarios');
+        return;
+    }
+
+    const filtered = allUsers.filter((u) => {
+        const haystack = [
+            u.id,
+            u.nombre_completo,
+            u.correo_electronico,
+            getRoleLabel(u.rol),
+            getStatusLabel(u.estado)
+        ]
+            .map((value) => normalizeSearchText(value))
+            .join(' ');
+
+        return haystack.includes(normalizedQuery);
+    });
+
+    renderUsersTable(filtered, 'No se encontraron usuarios');
+}
+
+function renderUsersTable(users, emptyMessage) {
+    const tbody = document.getElementById('usersTable');
+    if (!tbody) return;
+
+    const rows = users.map(u => {
+        const roleValue = normalizeRole(u.rol);
+        const roleLabel = getRoleLabel(roleValue);
+        const roleClass = getRoleBadgeClass(roleValue);
+
+        const statusValue = normalizeStatus(u.estado);
+        const statusLabel = getStatusLabel(statusValue);
+        const statusClass = getStatusBadgeClass(statusValue);
+
+        return `
+            <tr>
+                <td>${escapeHtml(String(u.id || '').substring(0, 8))}...</td>
+                <td>${escapeHtml(u.nombre_completo || 'N/A')}</td>
+                <td>${escapeHtml(u.correo_electronico || 'N/A')}</td>
+                <td><span class="badge ${roleClass}">${escapeHtml(roleLabel)}</span></td>
+                <td><span class="badge ${statusClass}">${escapeHtml(statusLabel)}</span></td>
+                <td>
+                    <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editUser('${escapeHtml(u.id)}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                    <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteUser('${escapeHtml(u.id)}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+                </td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#91ADC9;">${escapeHtml(emptyMessage)}</td></tr>`;
+}
 
 async function loadUsers() {
     console.log('👥 Cargando usuarios...');
     try {
+        await window.configReady;
         const users = await getUsers();
         allUsers = users;
         
-        const tbody = document.getElementById('usersTable');
-        if (!tbody) return;
-        
-        const rows = users.map(u => `
-            <tr>
-                <td>${u.id.substring(0, 8)}...</td>
-                <td>${u.nombre_completo || 'N/A'}</td>
-                <td>${u.correo_electronico}</td>
-                <td><span class="badge badge-${u.rol}">${u.rol}</span></td>
-                <td><span class="badge badge-active">Activo</span></td>
-                <td>
-                    <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editUser('${u.id}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                    <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteUser('${u.id}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
-                </td>
-            </tr>
-        `);
-        
-        tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center;color:#91ADC9;">No hay usuarios</td></tr>';
+        applyUsersSearchFilter();
         console.log('✅ Usuarios cargados:', users.length);
     } catch (error) {
         console.error('❌ Error cargando usuarios:', error);
@@ -54,7 +169,7 @@ function openUserModal(userId = null) {
             document.getElementById('userEmail').disabled = true; // No permitir cambiar email
             
             // Actualizar custom select
-            const role = user.rol || 'user';
+            const role = normalizeRole(user.rol);
             hiddenInput.value = role;
             
             // Actualizar display
@@ -76,7 +191,7 @@ function openUserModal(userId = null) {
         document.getElementById('userEmail').disabled = false;
         
         // Resetear custom select al estado inicial
-        hiddenInput.value = 'user';
+        hiddenInput.value = 'member';
         display.innerHTML = `<span class="select-value"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>Usuario</span></span>`;
         
         const options = customSelect.querySelectorAll('.select-option');
@@ -98,7 +213,7 @@ async function submitUserForm(e) {
     
     const name = document.getElementById('userName').value.trim();
     const email = document.getElementById('userEmail').value.trim();
-    const role = document.getElementById('userRole').value;
+    const role = normalizeRole(document.getElementById('userRole').value);
     
     if (!name || !email || !role) {
         showError('Por favor completa todos los campos');
@@ -182,8 +297,15 @@ function editUser(userId) {
     openUserModal(userId);
 }
 
-function confirmDeleteUser(userId) {
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+async function confirmDeleteUser(userId) {
+    const confirmed = await showDeleteConfirm({
+        title: '¿Estás seguro?',
+        message: '¡El registro será eliminado!',
+        confirmText: 'Sí, eliminarlo',
+        cancelText: 'Cancelar'
+    });
+
+    if (confirmed) {
         deleteUser(userId);
     }
 }
@@ -214,32 +336,8 @@ async function deleteUser(userId) {
 }
 
 function searchUsers(query) {
-    const tbody = document.getElementById('usersTable');
-    if (!query.trim()) {
-        loadUsers();
-        return;
-    }
-    
-    const filtered = allUsers.filter(u => 
-        u.nombre_completo.toLowerCase().includes(query.toLowerCase()) ||
-        u.correo_electronico.toLowerCase().includes(query.toLowerCase())
-    );
-    
-    const rows = filtered.map(u => `
-        <tr>
-            <td>${u.id.substring(0, 8)}...</td>
-            <td>${u.nombre_completo || 'N/A'}</td>
-            <td>${u.correo_electronico}</td>
-            <td><span class="badge badge-${u.rol}">${u.rol}</span></td>
-            <td><span class="badge badge-active">Activo</span></td>
-            <td>
-                <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editUser('${u.id}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteUser('${u.id}')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
-            </td>
-        </tr>
-    `);
-    
-    tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center;color:#91ADC9;">No se encontraron usuarios</td></tr>';
+    currentSearchQuery = query || '';
+    applyUsersSearchFilter();
 }
 
 function showError(msg) {
@@ -342,6 +440,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) closeUserModal();
     });
     
-    const searchInput = document.querySelector('input[placeholder*="Buscar"]');
-    if (searchInput) searchInput.addEventListener('input', (e) => searchUsers(e.target.value));
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        currentSearchQuery = searchInput.value || '';
+        searchInput.addEventListener('input', (e) => searchUsers(e.target.value));
+    }
 });

@@ -22,15 +22,19 @@ const getAuthToken = async () => {
 
 async function getUsers() {
     try {
+        await window.configReady;
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/users`,
+            `${window.SUPABASE_URL}/rest/v1/users?select=*&order=fecha_creacion.desc`,
             {
                 method: 'GET',
                 headers: await getAuthHeader()
             }
         );
 
-        if (!response.ok) throw new Error('Error fetching users');
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(`Error fetching users: ${response.status} ${err}`);
+        }
         return await response.json();
     } catch (error) {
         console.error('Error:', error);
@@ -40,6 +44,7 @@ async function getUsers() {
 
 async function createUser(userData) {
     try {
+        await window.configReady;
         const response = await fetch(
             `${window.SUPABASE_URL}/rest/v1/users`,
             {
@@ -138,6 +143,7 @@ async function createAdminUser(userData) {
 
 async function updateUser(userId, userData) {
     try {
+        await window.configReady;
         const response = await fetch(
             `${window.SUPABASE_URL}/rest/v1/users?id=eq.${userId}`,
             {
@@ -158,11 +164,33 @@ async function updateUser(userId, userData) {
 // ==================== RESERVAS ====================
 
 async function getReservations(filter = null) {
-    try {
-        let url = `${window.SUPABASE_URL}/rest/v1/reservas`;
+    await window.configReady;
 
+    const params = new URLSearchParams();
+    if (filter && filter !== '') {
+        params.set('estado', filter);
+    }
+
+    // Intento 1: backend local (service role)
+    try {
+        const backendUrl = `${window.API_BASE}/api/get-reservations${params.toString() ? `?${params.toString()}` : ''}`;
+        const backendResponse = await fetch(backendUrl, { method: 'GET' });
+
+        if (backendResponse.ok) {
+            const backendData = await backendResponse.json();
+            return Array.isArray(backendData) ? backendData : [];
+        }
+
+        console.warn('⚠️ Backend /api/get-reservations no disponible, usando fallback REST');
+    } catch (backendError) {
+        console.warn('⚠️ Backend local no responde, usando fallback REST:', backendError.message);
+    }
+
+    // Intento 2: REST directo a Supabase
+    try {
+        let url = `${window.SUPABASE_URL}/rest/v1/reservas?select=*&order=fecha_creacion.desc`;
         if (filter && filter !== '') {
-            url += `?estado=eq.${filter}`;
+            url += `&estado=eq.${filter}`;
         }
 
         const response = await fetch(url, {
@@ -170,7 +198,11 @@ async function getReservations(filter = null) {
             headers: await getAuthHeader()
         });
 
-        if (!response.ok) throw new Error('Error fetching reservations');
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(`Error fetching reservations: ${response.status} ${err}`);
+        }
+
         return await response.json();
     } catch (error) {
         console.error('Error:', error);
@@ -462,10 +494,25 @@ async function getStatistics() {
                 fecha: s.fecha_creacion
             });
         });
+        const mapReservationStatusToEs = (status) => {
+            switch (String(status || '').toLowerCase().trim()) {
+                case 'active':
+                    return 'activa';
+                case 'cancelled':
+                    return 'cancelada';
+                case 'completed':
+                    return 'completada';
+                case 'created':
+                    return 'creada';
+                default:
+                    return status || 'creada';
+            }
+        };
+
         (Array.isArray(recentReservas) ? recentReservas : []).forEach(r => {
             activities.push({
                 tipo: 'Reserva',
-                descripcion: `Reserva ${r.estado || 'creada'}`,
+                descripcion: `Reserva ${mapReservationStatusToEs(r.estado)}`,
                 usuario: r.id_usuario,
                 fecha: r.fecha_creacion
             });

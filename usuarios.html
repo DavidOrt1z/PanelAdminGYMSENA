@@ -69,6 +69,7 @@
                     </div>
                 </div>
                 <button class="logout-btn" id="logoutBtn">
+                    <img src="assets/icons/logout.svg" class="logout-icon" alt="">
                     <span>Cerrar Sesión</span>
                 </button>
             </div>
@@ -144,7 +145,7 @@
                                 <span class="select-value">Usuario</span>
                             </div>
                             <div class="select-options">
-                                <div class="select-option" data-value="user" data-icon="user">
+                                <div class="select-option" data-value="member" data-icon="user">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                     Usuario
                                 </div>
@@ -168,99 +169,8 @@
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/confirmDialog.js"></script>
     <script src="js/usuariosModule.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = checkAdminAuth();
-            if (user) {
-                document.getElementById('adminName').textContent = user.name || 'Administrador';
-                document.getElementById('adminEmail').textContent = user.email;
-                document.querySelector('.avatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
-                
-                // Cargar usuarios
-                loadUsers();
-            }
-            
-            // Conectar form submit evento
-            const userForm = document.getElementById('userForm');
-            if (userForm) {
-                userForm.addEventListener('submit', submitUserForm);
-            }
-        });
-
-        document.getElementById('logoutBtn')?.addEventListener('click', () => {
-            if (confirm('¿Está seguro de que desea cerrar sesión?')) {
-                logoutAdmin();
-            }
-        });
-
-        // Event listener para botón agregar usuario
-        document.getElementById('addUserBtn')?.addEventListener('click', () => {
-            openUserModal();
-        });
-
-        // Event listener para botón cancelar en modal
-        document.getElementById('cancelUserBtn')?.addEventListener('click', closeUserModal);
-
-        // Event listener para botón cerrar en modal
-        document.getElementById('closeUserModal')?.addEventListener('click', closeUserModal);
-
-        // Cerrar modal al hacer clic fuera del contenido
-        document.getElementById('userModal')?.addEventListener('click', (e) => {
-            if (e.target.id === 'userModal') closeUserModal();
-        });
-
-        // Actualizar icono del select cuando cambia
-        const customSelect = document.getElementById('customUserRole');
-        const hiddenInput = document.getElementById('userRole');
-        
-        if (customSelect) {
-            setupCustomSelect();
-        }
-
-        function setupCustomSelect() {
-            const display = customSelect.querySelector('.select-display');
-            const options = customSelect.querySelectorAll('.select-option');
-            const optionsContainer = customSelect.querySelector('.select-options');
-            
-            // Click en display para abrir/cerrar
-            display.addEventListener('click', (e) => {
-                e.stopPropagation();
-                optionsContainer.classList.toggle('show');
-            });
-            
-            // Click en opciones
-            options.forEach(option => {
-                option.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const value = option.dataset.value;
-                    const icon = option.querySelector('svg').outerHTML;
-                    const text = option.textContent.trim();
-                    
-                    // Actualizar valor oculto
-                    hiddenInput.value = value;
-                    
-                    // Actualizar display
-                    display.innerHTML = `<span class="select-value">${icon}<span>${text}</span></span>`;
-                    
-                    // Actualizar clases selected
-                    options.forEach(opt => opt.classList.remove('selected'));
-                    option.classList.add('selected');
-                    
-                    // Cerrar dropdown
-                    optionsContainer.classList.remove('show');
-                });
-            });
-            
-            // Cerrar al hacer clic fuera
-            document.addEventListener('click', () => {
-                optionsContainer.classList.remove('show');
-            });
-            
-            // Inicializar primera opción
-            options[0].classList.add('selected');
-            hiddenInput.value = 'user';
-        }
-    </script>
+    <script src="js/usuariosPage.js"></script>
 </body>
 </html>

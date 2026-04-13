@@ -69,13 +69,20 @@
 }
 
 .btn-primary {
-    background: #1273D4;
+    background-color: #1273D4;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background: #0a56a8;
+    background-color: #0a56a8;
     box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    color: #FFFFFF;
+}
+
+.btn-primary:focus,
+.btn-primary:focus-visible,
+.btn-primary:active {
+    color: #FFFFFF;
 }
 
 .section-card {
@@ -96,13 +103,29 @@
 }
 
 .badge-active {
-    background: rgba(76, 175, 80, 0.15);
-    color: #81C784;
+    background: rgba(76, 175, 80, 0.18);
+    color: #7fd885;
+    box-shadow: 0 0 0 4px rgba(100, 213, 106, 0.2);
 }
 
 .badge-inactive {
-    background: rgba(211, 47, 47, 0.15);
-    color: #FF6B6B;
+    background: rgba(158, 158, 158, 0.2);
+    color: #c7c7c7;
+}
+
+.badge-warning {
+    background: rgba(255, 152, 0, 0.16);
+    color: #ffbe70;
+}
+
+.badge-completed {
+    background: rgba(33, 150, 243, 0.18);
+    color: #7bc3ff;
+}
+
+.badge-cancelled {
+    background: rgba(211, 47, 47, 0.18);
+    color: #ff8e8e;
 }
 
 /* Modal */

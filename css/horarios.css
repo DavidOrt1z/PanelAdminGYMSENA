@@ -69,13 +69,20 @@
 }
 
 .btn-primary {
-    background: #1273D4;
+    background-color: #1273D4;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background: #0a56a8;
+    background-color: #0a56a8;
     box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    color: #FFFFFF;
+}
+
+.btn-primary:focus,
+.btn-primary:focus-visible,
+.btn-primary:active {
+    color: #FFFFFF;
 }
 
 .section-card {
@@ -100,12 +107,7 @@
     color: #81C784;
 }
 
-.almost-full {
-    background: rgba(255, 152, 0, 0.15);
-    color: #FFB74D;
-}
-
-.full {
+.unavailable {
     background: rgba(211, 47, 47, 0.15);
     color: #FF6B6B;
 }

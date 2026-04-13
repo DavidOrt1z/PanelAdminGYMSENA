@@ -3,30 +3,120 @@
 */
 
 let allStaff = [];
+let currentSearchQuery = '';
+
+function normalizeSearchText(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function applyStaffSearchFilter() {
+    const tbody = document.getElementById('staffTable');
+    if (!tbody) return;
+
+    const normalizedQuery = normalizeSearchText(currentSearchQuery);
+    const visibleStaff = !normalizedQuery
+        ? allStaff
+        : allStaff.filter((staff) => {
+            const haystack = [
+                staff.id,
+                staff.nombre_completo,
+                staff.rol,
+                staff.correo_electronico,
+                staff.telefono,
+                staff.teléfono,
+                getStaffStatusLabel(staff.estado)
+            ]
+                .map((value) => normalizeSearchText(value))
+                .join(' ');
+
+            return haystack.includes(normalizedQuery);
+        });
+
+    const rows = visibleStaff.map((s) => {
+        const statusLabel = getStaffStatusLabel(s.estado);
+        const statusClass = getStaffStatusClass(s.estado);
+
+        return `
+            <tr>
+                <td>${s.nombre_completo || 'N/A'}</td>
+                <td>${s.rol || 'N/A'}</td>
+                <td>${s.correo_electronico || 'N/A'}</td>
+                <td>${s.teléfono || 'N/A'}</td>
+                <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+                <td>
+                    <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editStaff('${s.id}')"><img src="assets/icons/edit.svg" alt="Editar" style="width:16px;height:16px;"></button>
+                    <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteStaff('${s.id}')"><img src="assets/icons/delete.svg" alt="Eliminar" style="width:16px;height:16px;"></button>
+                </td>
+            </tr>
+        `;
+    });
+
+    const emptyMessage = normalizedQuery ? 'No se encontro personal para la busqueda' : 'No hay personal';
+    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#91ADC9;">${emptyMessage}</td></tr>`;
+}
+
+function normalizeStaffStatus(status) {
+    const raw = String(status || 'active').toLowerCase().trim();
+    const map = {
+        activo: 'active',
+        inactivo: 'inactive',
+        suspendido: 'suspended',
+        bloqueado: 'blocked',
+        cancelado: 'cancelled',
+        cancelada: 'cancelled',
+        completado: 'completed',
+        completada: 'completed'
+    };
+    return map[raw] || raw;
+}
+
+function getStaffStatusLabel(status) {
+    switch (normalizeStaffStatus(status)) {
+        case 'active':
+            return 'Activo';
+        case 'inactive':
+            return 'Inactivo';
+        case 'suspended':
+            return 'Suspendido';
+        case 'blocked':
+            return 'Bloqueado';
+        case 'completed':
+            return 'Completado';
+        case 'cancelled':
+            return 'Cancelado';
+        default:
+            return 'Activo';
+    }
+}
+
+function getStaffStatusClass(status) {
+    switch (normalizeStaffStatus(status)) {
+        case 'active':
+            return 'badge-active';
+        case 'completed':
+            return 'badge-completed';
+        case 'inactive':
+            return 'badge-inactive';
+        case 'cancelled':
+            return 'badge-cancelled';
+        case 'suspended':
+        case 'blocked':
+            return 'badge-warning';
+        default:
+            return 'badge-active';
+    }
+}
 
 async function loadStaff() {
     console.log('👨‍💼 Cargando personal...');
     try {
         allStaff = await getStaff();
         
-        const tbody = document.getElementById('staffTable');
-        if (!tbody) return;
-        
-        const rows = allStaff.map(s => `
-            <tr>
-                <td>${s.nombre_completo || 'N/A'}</td>
-                <td>${s.rol || 'N/A'}</td>
-                <td>${s.correo_electronico || 'N/A'}</td>
-                <td>${s.teléfono || 'N/A'}</td>
-                <td><span class="badge badge-active">${s.estado === 'active' ? 'Activo' : 'Inactivo'}</span></td>
-                <td>
-                    <button class="btn btn-secondary" style="padding:6px 12px;margin-right:8px;" onclick="editStaff('${s.id}')"><img src="assets/icons/edit.svg" alt="Editar" style="width:16px;height:16px;"></button>
-                    <button class="btn btn-danger" style="padding:6px 12px;" onclick="confirmDeleteStaff('${s.id}')"><img src="assets/icons/delete.svg" alt="Eliminar" style="width:16px;height:16px;"></button>
-                </td>
-            </tr>
-        `);
-        
-        tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center;color:#91ADC9;">No hay personal</td></tr>';
+        applyStaffSearchFilter();
         console.log('✅ Personal cargado:', allStaff.length);
     } catch (error) {
         console.error('❌ Error cargando personal:', error);
@@ -148,8 +238,15 @@ function editStaff(staffId) {
     openStaffModal(staffId);
 }
 
-function confirmDeleteStaff(staffId) {
-    if (confirm('¿Estás seguro de que deseas eliminar este personal?')) {
+async function confirmDeleteStaff(staffId) {
+    const confirmed = await showDeleteConfirm({
+        title: '¿Estás seguro?',
+        message: '¡El registro será eliminado!',
+        confirmText: 'Sí, eliminarlo',
+        cancelText: 'Cancelar'
+    });
+
+    if (confirmed) {
         deleteStaff(staffId);
     }
 }
@@ -363,6 +460,15 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
             togglePasswordVisibility();
+        });
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        currentSearchQuery = searchInput.value || '';
+        searchInput.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value || '';
+            applyStaffSearchFilter();
         });
     }
 });

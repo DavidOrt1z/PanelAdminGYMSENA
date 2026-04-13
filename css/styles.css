@@ -198,7 +198,7 @@ body {
     width: 16px;
     height: 16px;
     object-fit: contain;
-    filter: brightness(2);
+    filter: brightness(0) invert(1);
 }
 
 .logout-btn:hover {
@@ -760,6 +760,93 @@ svg.icon {
     fill: none;
 }
 
+/* SIDEBAR COLAPSABLE */
+.sidebar {
+    width: 280px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sidebar:hover {
+    width: 280px;
+    background: rgba(18, 26, 33, 0.88) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    z-index: 1001;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        width: 70px;
+    }
+    .sidebar-header {
+        min-height: 169px;
+    }
+    .sidebar:hover {
+        width: 280px;
+        background: rgba(18, 26, 33, 0.88) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        z-index: 1001;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+    }
+    .main-content {
+        margin-left: 70px !important;
+        transition: margin-left 0.3s ease;
+    }
+    .sidebar:hover ~ .main-content {
+        margin-left: 280px !important;
+    }
+    .sidebar:not(:hover) .sidebar-header h2,
+    .sidebar:not(:hover) .sidebar-header p {
+        opacity: 0;
+        visibility: hidden;
+    }
+    .sidebar:not(:hover) .nav-item span,
+    .sidebar:not(:hover) .admin-details,
+    .sidebar:not(:hover) .logout-btn span {
+        opacity: 0;
+        width: 0;
+        display: none;
+    }
+    .sidebar:not(:hover) .nav-item {
+        justify-content: center;
+        padding: 15px 0;
+    }
+    .sidebar:not(:hover) .nav-item .icon,
+    .sidebar:not(:hover) .nav-item svg {
+        margin: 0 auto;
+    }
+    .sidebar:not(:hover) .admin-info {
+        align-items: center;
+    }
+    .sidebar:not(:hover) .logout-btn {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: unset !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        margin: 0 auto !important;
+        overflow: hidden !important;
+        justify-content: center;
+    }
+    .sidebar:not(:hover) .logout-btn img {
+        margin: 0;
+    }
+    .sidebar:not(:hover) .sidebar-logo {
+        width: 40px;
+        height: 40px;
+        display: block;
+        margin: 0 auto 10px auto;
+    }
+    .sidebar:not(:hover) .sidebar-header {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
 .nav-item svg.icon {
     width: 24px;
     height: 24px;
@@ -777,4 +864,94 @@ svg.icon {
     height: 18px !important;
     stroke: var(--secondary-color);
     stroke-width: 2.5;
+}
+
+/* ==================== CONFIRM DELETE MODAL ==================== */
+.app-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 26, 33, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 12000;
+    animation: fadeIn 0.18s ease-out;
+}
+
+.app-confirm-overlay.closing {
+    animation: fadeOut 0.18s ease-out;
+}
+
+.app-confirm-modal {
+    width: min(92vw, 420px);
+    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
+    border: 1px solid rgba(145, 173, 201, 0.22);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    padding: 26px 24px 20px;
+    text-align: center;
+}
+
+.app-confirm-icon {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    border: 3px solid #91ADC9;
+    color: #91ADC9;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 82px;
+}
+
+.app-confirm-modal h3 {
+    color: #FFFFFF;
+    font-size: 36px;
+    margin: 4px 0 10px;
+}
+
+.app-confirm-modal p {
+    color: #91ADC9;
+    font-size: 19px;
+    margin: 0 0 22px;
+}
+
+.app-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.app-confirm-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #FFFFFF;
+}
+
+.app-confirm-btn-danger {
+    background: #1273D4;
+}
+
+.app-confirm-btn-danger:hover {
+    background: #0a56a8;
+}
+
+.app-confirm-btn-cancel {
+    background: #D32F2F;
+}
+
+.app-confirm-btn-cancel:hover {
+    background: #b71c1c;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
 }

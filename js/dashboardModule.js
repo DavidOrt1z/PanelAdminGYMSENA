@@ -51,6 +51,38 @@ async function loadDashboardData() {
     }
 }
 
+function normalizeSearchText(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function filterDashboardActivityRows(query) {
+    const tbody = document.getElementById('recentActivityTable');
+    if (!tbody) return;
+
+    const normalizedQuery = normalizeSearchText(query);
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    rows.forEach((row) => {
+        const isEmptyRow = row.children.length === 1;
+        if (isEmptyRow) {
+            row.style.display = '';
+            return;
+        }
+
+        if (!normalizedQuery) {
+            row.style.display = '';
+            return;
+        }
+
+        const text = normalizeSearchText(row.textContent);
+        row.style.display = text.includes(normalizedQuery) ? '' : 'none';
+    });
+}
+
 function showError(message) {
     let notification = document.getElementById('errorNotification');
     if (!notification) {
@@ -86,5 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = checkAdminAuth();
     if (user) {
         loadDashboardData();
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            filterDashboardActivityRows(e.target.value);
+        });
     }
 });

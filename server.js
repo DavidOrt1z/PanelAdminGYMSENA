@@ -84,6 +84,257 @@ app.get('/api/get-staff', async (req, res) => {
     }
 });
 
+// Ruta para obtener reservas (usa service role para evitar bloqueos RLS del panel)
+app.get('/api/get-reservations', async (req, res) => {
+    try {
+        const { estado } = req.query;
+
+        let query = supabase
+            .from('reservas')
+            .select('id, id_usuario, id_franja_horaria, estado, fecha_creacion, token_qr')
+            .order('fecha_creacion', { ascending: false });
+
+        if (estado) {
+            query = query.eq('estado', estado);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            console.log('⚠️ Error leyendo tabla reservas, probando fallback reservations:', error.message);
+
+            let fallbackQuery = supabase
+                .from('reservations')
+                .select('id, user_id, slot_id, status, created_at, qr_token')
+                .order('created_at', { ascending: false });
+
+            if (estado) {
+                fallbackQuery = fallbackQuery.eq('status', estado);
+            }
+
+            const { data: fallbackData, error: fallbackError } = await fallbackQuery;
+            if (fallbackError) {
+                return res.status(400).json({ error: fallbackError.message, data: [] });
+            }
+
+            const normalized = (fallbackData || []).map(r => ({
+                id: r.id,
+                id_usuario: r.user_id,
+                id_franja_horaria: r.slot_id,
+                estado: r.status,
+                fecha_creacion: r.created_at,
+                token_qr: r.qr_token
+            }));
+
+            // Intentar enriquecer con horario real si slot_id coincide con franjas_horarias
+            const slotIds = [...new Set((normalized || []).map(r => r.id_franja_horaria).filter(Boolean))];
+            let slotsMap = new Map();
+
+            if (slotIds.length > 0) {
+                const { data: slotsData } = await supabase
+                    .from('franjas_horarias')
+                    .select('id, hora_inicio, hora_fin, fecha')
+                    .in('id', slotIds);
+
+                slotsMap = new Map((slotsData || []).map(s => [String(s.id), s]));
+            }
+
+            const enrichedFallback = (normalized || []).map(r => {
+                const slot = slotsMap.get(String(r.id_franja_horaria));
+                return {
+                    ...r,
+                    hora_inicio: slot?.hora_inicio || null,
+                    hora_fin: slot?.hora_fin || null,
+                    fecha_horario: slot?.fecha || null
+                };
+            });
+
+            return res.status(200).json(enrichedFallback);
+        }
+
+        // Enriquecer reservas con datos de horario en una sola respuesta
+        const reservationRows = data || [];
+        const slotIds = [...new Set(reservationRows.map(r => r.id_franja_horaria).filter(Boolean))];
+        let slotsMap = new Map();
+
+        if (slotIds.length > 0) {
+            const { data: slotsData, error: slotsError } = await supabase
+                .from('franjas_horarias')
+                .select('id, hora_inicio, hora_fin, fecha')
+                .in('id', slotIds);
+
+            if (!slotsError) {
+                slotsMap = new Map((slotsData || []).map(s => [String(s.id), s]));
+            } else {
+                console.log('⚠️ No se pudieron enriquecer horarios en /api/get-reservations:', slotsError.message);
+            }
+        }
+
+        const enrichedRows = reservationRows.map(r => {
+            const slot = slotsMap.get(String(r.id_franja_horaria));
+            return {
+                ...r,
+                hora_inicio: slot?.hora_inicio || null,
+                hora_fin: slot?.hora_fin || null,
+                fecha_horario: slot?.fecha || null
+            };
+        });
+
+        return res.status(200).json(enrichedRows);
+    } catch (error) {
+        console.error('❌ ERROR en /api/get-reservations:', error.message);
+        return res.status(500).json({ error: error.message, data: [] });
+    }
+});
+
+// Ruta para validar/consultar QR con datos completos de reserva
+app.get('/api/qr-lookup', async (req, res) => {
+    try {
+        const rawToken = String(req.query.token || '').trim();
+        if (!rawToken) {
+            return res.status(400).json({
+                found: false,
+                valid: false,
+                message: 'Token QR vacio'
+            });
+        }
+
+        let token = rawToken;
+        try {
+            const parsedUrl = new URL(rawToken);
+            token = parsedUrl.searchParams.get('token') || rawToken;
+        } catch (_) {
+            // No es URL valida, continuar con token original.
+        }
+
+        token = String(token).trim();
+        if (token.startsWith('resv:')) {
+            token = token.slice(5).trim();
+        }
+
+        if (!token) {
+            return res.status(400).json({
+                found: false,
+                valid: false,
+                message: 'Token QR invalido'
+            });
+        }
+
+        let reservation = null;
+
+        const { data: reservasData, error: reservasError } = await supabase
+            .from('reservas')
+            .select('id, id_usuario, id_franja_horaria, estado, fecha_creacion, token_qr')
+            .eq('token_qr', token)
+            .order('fecha_creacion', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (!reservasError && reservasData) {
+            reservation = reservasData;
+        }
+
+        if (!reservation) {
+            const { data: byIdData, error: byIdError } = await supabase
+                .from('reservas')
+                .select('id, id_usuario, id_franja_horaria, estado, fecha_creacion, token_qr')
+                .eq('id', token)
+                .order('fecha_creacion', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (!byIdError && byIdData) {
+                reservation = byIdData;
+            }
+        }
+
+        if (!reservation) {
+            const { data: fallbackReservations, error: fallbackError } = await supabase
+                .from('reservations')
+                .select('id, user_id, slot_id, status, created_at, qr_token')
+                .or(`qr_token.eq.${token},id.eq.${token}`)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (!fallbackError && fallbackReservations) {
+                reservation = {
+                    id: fallbackReservations.id,
+                    id_usuario: fallbackReservations.user_id,
+                    id_franja_horaria: fallbackReservations.slot_id,
+                    estado: fallbackReservations.status,
+                    fecha_creacion: fallbackReservations.created_at,
+                    token_qr: fallbackReservations.qr_token
+                };
+            }
+        }
+
+        if (!reservation) {
+            return res.status(200).json({
+                found: false,
+                valid: false,
+                message: 'No tiene reserva registrada con ese QR'
+            });
+        }
+
+        const userId = reservation.id_usuario ? String(reservation.id_usuario) : '';
+        const slotId = reservation.id_franja_horaria ? String(reservation.id_franja_horaria) : '';
+
+        let user = null;
+        if (userId) {
+            const { data: userData } = await supabase
+                .from('users')
+                .select('id, id_autenticacion, nombre_completo, nombre, apellido, correo_electronico, email')
+                .or(`id.eq.${userId},id_autenticacion.eq.${userId}`)
+                .order('fecha_creacion', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+            user = userData || null;
+        }
+
+        let slot = null;
+        if (slotId) {
+            const { data: slotData } = await supabase
+                .from('franjas_horarias')
+                .select('id, fecha, hora_inicio, hora_fin')
+                .eq('id', slotId)
+                .maybeSingle();
+            slot = slotData || null;
+        }
+
+        const estado = String(reservation.estado || '').toLowerCase().trim();
+        const isValidReservation = estado === 'active' || estado === 'completed';
+
+        const userName = user?.nombre_completo
+            || [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim()
+            || null;
+        const userEmail = user?.correo_electronico || user?.email || null;
+
+        return res.status(200).json({
+            found: true,
+            valid: isValidReservation,
+            reservation_id: reservation.id,
+            status: estado || 'unknown',
+            message: isValidReservation
+                ? 'Reserva encontrada'
+                : 'La reserva no esta activa para ingreso',
+            usuario_nombre: userName,
+            usuario_email: userEmail,
+            fecha_horario: slot?.fecha || null,
+            hora_inicio: slot?.hora_inicio || null,
+            hora_fin: slot?.hora_fin || null
+        });
+    } catch (error) {
+        console.error('❌ ERROR en /api/qr-lookup:', error.message);
+        return res.status(500).json({
+            found: false,
+            valid: false,
+            message: 'Error consultando QR',
+            error: error.message
+        });
+    }
+});
+
 // ============================================
 // RUTA PARA ESTADÍSTICAS DEL DASHBOARD
 // ============================================

@@ -15,6 +15,12 @@
     gap: 15px;
 }
 
+.reservas-header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
 .section-header h1 {
     color: #FFFFFF;
     font-size: 28px;
@@ -41,13 +47,20 @@
 }
 
 .btn-primary {
-    background: #1273D4;
+    background-color: #1273D4;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background: #0a56a8;
+    background-color: #0a56a8;
     box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    color: #FFFFFF;
+}
+
+.btn-primary:focus,
+.btn-primary:focus-visible,
+.btn-primary:active {
+    color: #FFFFFF;
 }
 
 /* Select primario */
@@ -59,6 +72,16 @@ select.btn-primary {
     background-position: right 10px center;
     background-size: 16px;
     padding-right: 36px;
+    color: #FFFFFF;
+    -webkit-text-fill-color: #FFFFFF;
+}
+
+select.btn-primary:hover,
+select.btn-primary:focus,
+select.btn-primary:focus-visible,
+select.btn-primary:active {
+    color: #FFFFFF;
+    -webkit-text-fill-color: #FFFFFF;
 }
 
 select.btn-primary option {
@@ -97,6 +120,77 @@ select.btn-primary option {
     padding: 24px;
     overflow-x: auto;
 }
+
+.status-cell {
+    min-width: 130px;
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.status-active {
+    background: rgba(76, 175, 80, 0.18);
+    color: #7fd885;
+}
+
+
+
+
+.status-completed {
+    background: rgba(33, 150, 243, 0.18);
+    color: #7bc3ff;
+}
+
+
+
+.status-cancelled {
+    background: rgba(211, 47, 47, 0.18);
+    color: #ff8e8e;
+}
+
+
+
+.status-editor-select {
+    min-width: 126px;
+    padding: 6px 30px 6px 10px;
+    border: 1px solid rgba(145, 173, 201, 0.28);
+    border-radius: 8px;
+    background-color: #22384c;
+    color: #cde0f3;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2391ADC9' stroke-width='2'%3E%3Cpath d='M5 7.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-editor-select:focus {
+    outline: none;
+    border-color: #1273D4;
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+}
+
+.status-editor-select option {
+    background: #243647;
+    color: #FFFFFF;
+}
+
 .badge {
     display: inline-block;
     padding: 4px 12px;
@@ -106,15 +200,11 @@ select.btn-primary option {
     text-transform: capitalize;
 }
 
-.badge-pending {
-    background: rgba(255, 152, 0, 0.15);
-    color: #FFB74D;
+.badge-active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #7fd885;
 }
 
-.badge-confirmed {
-    background: rgba(76, 175, 80, 0.15);
-    color: #81C784;
-}
 
 .badge-completed {
     background: rgba(33, 150, 243, 0.15);
@@ -184,6 +274,56 @@ select.btn-primary option {
 .qr-container img {
     max-width: 100%;
     border-radius: 8px;
+}
+
+.glass-modal {
+    width: min(92vw, 620px);
+    max-width: 620px;
+}
+
+.qr-validator-body {
+    padding: 20px 24px 24px;
+}
+
+#qrVideo {
+    width: 100%;
+    max-height: 360px;
+    border-radius: 12px;
+    border: 1px solid rgba(145, 173, 201, 0.3);
+    background: #0f1720;
+    object-fit: cover;
+}
+
+.scanner-status {
+    margin-top: 12px;
+    color: #91ADC9;
+    font-size: 14px;
+}
+
+.manual-token-box {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+}
+
+.manual-token-box input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(145, 173, 201, 0.3);
+    background: #1a2c3a;
+    color: #d7e6f5;
+}
+
+.manual-token-box input:focus {
+    outline: none;
+    border-color: #1273D4;
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+}
+
+.qr-result-container {
+    padding: 16px 22px 24px;
 }
 
 @keyframes slideUp {

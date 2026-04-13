@@ -3,6 +3,40 @@
 */
 
 let allSlots = [];
+let currentSearchQuery = '';
+
+function normalizeSearchText(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function matchesSlotSearch(slot, query) {
+    const normalizedQuery = normalizeSearchText(query);
+    if (!normalizedQuery) return true;
+
+    const [year, month, day] = String(slot.fecha || '').split('-');
+    const dateFormatted = (day && month && year) ? `${day}/${month}/${year}` : '';
+    const start = String(slot.hora_inicio || '').substring(0, 5);
+    const end = String(slot.hora_fin || '').substring(0, 5);
+
+    const haystack = [
+        slot.id,
+        slot.fecha,
+        dateFormatted,
+        start,
+        end,
+        `${start}-${end}`,
+        slot.capacidad,
+        slot.cantidad_reservada
+    ]
+        .map((item) => normalizeSearchText(item))
+        .join(' ');
+
+    return haystack.includes(normalizedQuery);
+}
 
 async function loadSlots() {
     console.log('⏰ Cargando horarios...');
@@ -22,10 +56,10 @@ async function loadSlots() {
 
         allSlots = slots;
 
-        // Contar reservas confirmadas (confirmed o pending) por slot_id
+        // Contar reservas activas por slot_id
         const reservedBySlot = {};
         reservations.forEach(r => {
-            if (r.estado === 'confirmed' || r.estado === 'pending') {
+            if (r.estado === 'active') {
                 reservedBySlot[r.id_franja_horaria] = (reservedBySlot[r.id_franja_horaria] || 0) + 1;
             }
         });
@@ -35,7 +69,9 @@ async function loadSlots() {
             return;
         }
 
-        const rows = allSlots.map(s => {
+        const visibleSlots = allSlots.filter((slot) => matchesSlotSearch(slot, currentSearchQuery));
+
+        const rows = visibleSlots.map(s => {
             // s.fecha = '2026-03-10', s.hora_inicio = '08:00:00', s.hora_fin = '09:00:00'
             const [y, m, d]   = (s.fecha || '').split('-');
             const dateStr     = s.fecha
@@ -70,8 +106,8 @@ async function loadSlots() {
             `;
         });
 
-        tbody.innerHTML = rows.join('');
-        console.log(`✅ Horarios cargados: ${allSlots.length}, Reservas: ${reservations.length}`);
+        tbody.innerHTML = rows.join('') || '<tr><td colspan="7" style="text-align:center;color:#91ADC9;">No se encontraron horarios</td></tr>';
+        console.log(`✅ Horarios cargados: ${allSlots.length}, visibles: ${visibleSlots.length}, Reservas: ${reservations.length}`);
     } catch (error) {
         console.error('❌ Error cargando horarios:', error);
         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#FF6B6B;">Error al cargar horarios</td></tr>';
@@ -91,7 +127,7 @@ function openSlotModal(slotId = null) {
             document.getElementById('slotDate').value      = slot.fecha;              // 'YYYY-MM-DD'
             document.getElementById('slotStartTime').value = slot.hora_inicio.substring(0, 5); // 'HH:MM'
             document.getElementById('slotEndTime').value   = slot.hora_fin.substring(0, 5);
-            document.getElementById('slotCapacity').value  = slot.capacity;
+            document.getElementById('slotCapacity').value  = slot.capacidad ?? slot.capacity ?? '';
             form.dataset.slotId = slotId;
         }
     } else {
@@ -165,8 +201,15 @@ function editSlot(slotId) {
     openSlotModal(slotId);
 }
 
-function confirmDeleteSlot(slotId) {
-    if (confirm('¿Estás seguro de que deseas eliminar este horario?')) {
+async function confirmDeleteSlot(slotId) {
+    const confirmed = await showDeleteConfirm({
+        title: '¿Estás seguro?',
+        message: '¡El registro será eliminado!',
+        confirmText: 'Sí, eliminarlo',
+        cancelText: 'Cancelar'
+    });
+
+    if (confirmed) {
         deleteSlot(slotId);
     }
 }
@@ -261,12 +304,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modal) closeSlotModal();
     });
 
-    document.getElementById('searchInput')?.addEventListener('input', (e) => {
-        const q = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#slotsTable tr');
-        rows.forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-        });
+    document.getElementById('searchInput')?.addEventListener('input', async (e) => {
+        currentSearchQuery = e.target.value || '';
+        await loadSlots();
     });
 
     document.getElementById('logoutBtn')?.addEventListener('click', () => {
