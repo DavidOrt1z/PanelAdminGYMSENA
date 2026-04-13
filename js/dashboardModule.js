@@ -26,19 +26,26 @@ async function loadDashboardData() {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#91ADC9;">Sin actividad reciente</td></tr>';
             } else {
                 tbody.innerHTML = activities.map(a => {
-                    const fecha = a.fecha ? new Date(a.fecha).toLocaleDateString('es-ES', {
-                        day: '2-digit', month: '2-digit', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit'
-                    }) : 'N/A';
+                    const dateValue = a.fecha ? new Date(a.fecha) : null;
+                    const isSmallScreen = window.innerWidth <= 768;
+                    const fecha = dateValue
+                        ? dateValue.toLocaleString('es-ES', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: isSmallScreen ? '2-digit' : 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })
+                        : 'N/A';
                     const tipoBadge = a.tipo === 'Personal'
                         ? `<span style="background:#1273D4;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`
                         : `<span style="background:#2E7D32;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`;
                     return `
                         <tr>
                             <td>${tipoBadge}</td>
-                            <td>${a.descripcion || 'N/A'}</td>
-                            <td>${a.usuario || 'N/A'}</td>
-                            <td>${fecha}</td>
+                            <td class="activity-description">${a.descripcion || 'N/A'}</td>
+                            <td class="activity-user">${a.usuario || 'N/A'}</td>
+                            <td class="activity-date">${fecha}</td>
                         </tr>
                     `;
                 }).join('');

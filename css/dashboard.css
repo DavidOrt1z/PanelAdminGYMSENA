@@ -69,6 +69,19 @@
     font-size: 20px;
 }
 
+.activity-description {
+    max-width: 260px;
+}
+
+.activity-user {
+    max-width: 260px;
+}
+
+.activity-date {
+    white-space: nowrap;
+    min-width: 132px;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -95,6 +108,35 @@
     
     .metric-value {
         font-size: 24px;
+    }
+
+    .section-card {
+        padding: 14px;
+    }
+
+    .section-card .data-table {
+        min-width: 700px;
+    }
+
+    .section-card .data-table th,
+    .section-card .data-table td {
+        font-size: 13px;
+        padding: 10px 8px;
+        vertical-align: top;
+    }
+
+    .activity-description {
+        min-width: 165px;
+    }
+
+    .activity-user {
+        min-width: 170px;
+        word-break: break-word;
+    }
+
+    .activity-date {
+        min-width: 120px;
+        font-size: 12px;
     }
 }
 
