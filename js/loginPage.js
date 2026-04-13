@@ -1,3 +1,17 @@
+const passwordInput = document.getElementById('password');
+const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+
+togglePasswordBtn?.addEventListener('click', () => {
+    if (!passwordInput) return;
+
+    const isVisible = passwordInput.type === 'text';
+    passwordInput.type = isVisible ? 'password' : 'text';
+    togglePasswordBtn.classList.toggle('is-visible', !isVisible);
+    togglePasswordBtn.setAttribute('aria-pressed', String(!isVisible));
+    togglePasswordBtn.setAttribute('aria-label', isVisible ? 'Mostrar contraseña' : 'Ocultar contraseña');
+    passwordInput.focus();
+});
+
 document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
