@@ -221,6 +221,7 @@ app.get('/api/qr-lookup', async (req, res) => {
         }
 
         let reservation = null;
+        let reservationSource = 'reservas';
 
         const { data: reservasData, error: reservasError } = await supabase
             .from('reservas')
@@ -258,6 +259,7 @@ app.get('/api/qr-lookup', async (req, res) => {
                 .maybeSingle();
 
             if (!fallbackError && fallbackReservations) {
+                reservationSource = 'reservations';
                 reservation = {
                     id: fallbackReservations.id,
                     id_usuario: fallbackReservations.user_id,
@@ -302,8 +304,75 @@ app.get('/api/qr-lookup', async (req, res) => {
             slot = slotData || null;
         }
 
-        const estado = String(reservation.estado || '').toLowerCase().trim();
-        const isValidReservation = estado === 'active' || estado === 'completed';
+        const estadoOriginal = String(reservation.estado || '').toLowerCase().trim();
+
+        let estadoFinal = estadoOriginal;
+        let completionMessage = '';
+
+        // Al escanear una reserva activa, marcarla automaticamente como completada.
+        if (estadoOriginal === 'active') {
+            const nowIso = new Date().toISOString();
+            let completeError = null;
+            let completionConfirmed = false;
+
+            if (reservationSource === 'reservations') {
+                const { error } = await supabase
+                    .from('reservations')
+                    .update({
+                        status: 'completed',
+                        updated_at: nowIso
+                    })
+                    .eq('id', reservation.id);
+                completeError = error;
+
+                const { data: verifyRow } = await supabase
+                    .from('reservations')
+                    .select('status')
+                    .eq('id', reservation.id)
+                    .maybeSingle();
+
+                completionConfirmed = String(verifyRow?.status || '').toLowerCase().trim() === 'completed';
+            } else {
+                const payloadCandidates = [
+                    { estado: 'completed', fecha_actualizacion: nowIso, completed_at: nowIso },
+                    { estado: 'completed', fecha_actualizacion: nowIso },
+                    { estado: 'completed' }
+                ];
+
+                for (const payload of payloadCandidates) {
+                    const { error } = await supabase
+                        .from('reservas')
+                        .update(payload)
+                        .eq('id', reservation.id);
+
+                    if (!error) {
+                        completeError = null;
+                        break;
+                    }
+
+                    completeError = error;
+                }
+
+                const { data: verifyRow } = await supabase
+                    .from('reservas')
+                    .select('estado')
+                    .eq('id', reservation.id)
+                    .maybeSingle();
+
+                completionConfirmed = String(verifyRow?.estado || '').toLowerCase().trim() === 'completed';
+            }
+
+            if (!completeError && completionConfirmed) {
+                estadoFinal = 'completed';
+                completionMessage = 'Ingreso validado. Reserva completada automaticamente.';
+                reservation.estado = 'completed';
+            } else {
+                completionMessage = 'Reserva valida, pero no se pudo actualizar a completada.';
+                console.log('⚠️ No se pudo marcar la reserva como completada:', completeError?.message || 'sin detalle');
+            }
+        }
+
+        const isValidReservation = estadoFinal === 'active' || estadoFinal === 'completed';
 
         let userName = user?.nombre_completo
             || [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim()
@@ -349,9 +418,9 @@ app.get('/api/qr-lookup', async (req, res) => {
             found: true,
             valid: isValidReservation,
             reservation_id: reservation.id,
-            status: estado || 'unknown',
+            status: estadoFinal || 'unknown',
             message: isValidReservation
-                ? 'Reserva encontrada'
+                ? (completionMessage || 'Reserva encontrada')
                 : 'La reserva no esta activa para ingreso',
             usuario_nombre: userName,
             usuario_email: userEmail,

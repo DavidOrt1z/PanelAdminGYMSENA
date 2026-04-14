@@ -748,17 +748,22 @@ async function validateQRToken(token) {
             const fallbackUser = getReservationUserFallback(result.reservation_id);
             const userName = escapeHtml(result.usuario_nombre || fallbackUser.name || 'Sin nombre');
             const userEmail = escapeHtml(result.usuario_email || fallbackUser.email || 'Sin correo');
+            const serverMessage = escapeHtml(result.message || 'Reserva valida');
 
             openQrResultModal(`
                 <div style="padding:8px 4px 0; text-align:center;">
-                    <div style="font-size:48px; line-height:1; margin-bottom:10px;">✅</div>
+                    <img src="assets/icons/qr-valid.svg" alt="Reserva valida" style="width:56px;height:56px;display:block;margin:0 auto 10px;"/>
                     <h3 style="color:#7fd885; margin:0 0 8px 0;">Reserva valida</h3>
+                    <p style="color:#D7E6F5; margin:0 0 10px 0;">${serverMessage}</p>
                     <p style="color:#D7E6F5; margin:0 0 6px 0;"><strong>Usuario:</strong> ${userName}</p>
                     <p style="color:#D7E6F5; margin:0 0 6px 0;"><strong>Correo:</strong> ${userEmail}</p>
                     <p style="color:#D7E6F5; margin:0;"><strong>Horario:</strong> ${escapeHtml(slotLine)}</p>
                 </div>
             `);
-            showSuccess('QR escaneado correctamente');
+            await loadReservations();
+            showSuccess(result.status === 'completed'
+                ? 'Ingreso validado y reserva completada'
+                : 'QR escaneado correctamente');
             return;
         }
 
