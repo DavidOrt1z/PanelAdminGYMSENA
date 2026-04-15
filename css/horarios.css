@@ -123,6 +123,15 @@
     padding: 6px 10px !important;
 }
 
+/* Centrar columnas numéricas de capacidad/reservados */
+.horarios-section .data-table thead th:nth-child(4),
+.horarios-section .data-table thead th:nth-child(5),
+.horarios-section .data-table tbody td:nth-child(4),
+.horarios-section .data-table tbody td:nth-child(5) {
+    text-align: center;
+    white-space: nowrap;
+}
+
 /* Modal */
 .modal {
     display: none;
@@ -272,5 +281,13 @@ form {
     .section-header {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .horarios-section .data-table thead th:nth-child(4),
+    .horarios-section .data-table thead th:nth-child(5),
+    .horarios-section .data-table tbody td:nth-child(4),
+    .horarios-section .data-table tbody td:nth-child(5) {
+        min-width: 92px;
+        text-align: center;
     }
 }
