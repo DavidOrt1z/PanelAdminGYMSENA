@@ -218,12 +218,10 @@ async function deleteSlot(slotId) {
     try {
         await window.configReady;
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/franjas_horarias?id=eq.${slotId}`,
+            `${window.API_BASE}/api/slots/${encodeURIComponent(slotId)}`,
             {
                 method: 'DELETE',
                 headers: {
-                    'apikey': window.SUPABASE_ANON_KEY,
-                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
                     'Content-Type': 'application/json'
                 }
             }

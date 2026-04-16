@@ -231,13 +231,11 @@ async function submitUserForm(e) {
         if (currentUserId) {
             // Editar usuario existente
             const response = await fetch(
-                `${window.SUPABASE_URL}/rest/v1/users?id=eq.${currentUserId}`,
+                `${window.API_BASE}/api/users/${encodeURIComponent(currentUserId)}`,
                 {
                     method: 'PATCH',
                     headers: {
-                        'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'apikey': window.SUPABASE_ANON_KEY
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ 
                         nombre_completo: name, 
@@ -313,12 +311,10 @@ async function confirmDeleteUser(userId) {
 async function deleteUser(userId) {
     try {
         await window.configReady;
-        const response = await fetch(`${window.SUPABASE_URL}/rest/v1/users?id=eq.${userId}`, {
+        const response = await fetch(`${window.API_BASE}/api/users/${encodeURIComponent(userId)}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-                'apikey': window.SUPABASE_ANON_KEY
+                'Content-Type': 'application/json'
             }
         });
         

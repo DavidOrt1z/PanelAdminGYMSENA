@@ -62,3 +62,24 @@ npm start
 - No subir `.env` al repositorio.
 - No hardcodear claves en frontend.
 - Las credenciales de Supabase se sirven desde `/api/config` del backend.
+
+## Checklist automatizable QR/Reservas
+
+Puedes validar rápido el flujo crítico de reservas y QR con un script:
+
+```bash
+npm run check:qr-reservas
+```
+
+Variables opcionales para pruebas más completas:
+
+```bash
+API_BASE=http://localhost:5500
+TEST_RESERVATION_ID=<uuid_reserva>
+TEST_QR_TOKEN=<token_o_id_qr>
+ALLOW_MUTATION=true
+```
+
+Notas:
+- Sin `TEST_RESERVATION_ID` o `TEST_QR_TOKEN`, el script ejecuta checks no destructivos.
+- Con `ALLOW_MUTATION=true`, también prueba el endpoint que completa la reserva al validar QR.

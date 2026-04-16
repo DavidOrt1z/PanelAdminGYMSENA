@@ -143,12 +143,13 @@ async function createAdminUser(userData) {
 
 async function updateUser(userId, userData) {
     try {
-        await window.configReady;
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/users?id=eq.${userId}`,
+            `${window.API_BASE}/api/users/${encodeURIComponent(userId)}`,
             {
                 method: 'PATCH',
-                headers: await getAuthHeader(),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(userData)
             }
         );
@@ -213,11 +214,13 @@ async function getReservations(filter = null) {
 async function updateReservationStatus(reservationId, status) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/reservas?id=eq.${reservationId}`,
+            `${window.API_BASE}/api/reservations/${encodeURIComponent(reservationId)}/status`,
             {
-                method: 'PATCH',
-                headers: await getAuthHeader(),
-                body: JSON.stringify({ estado: status })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status })
             }
         );
 
@@ -284,13 +287,13 @@ async function createSlot(slotData) {
 
 async function updateSlot(slotId, slotData) {
     try {
-        const headers = await getAuthHeader();
-        headers['Prefer'] = 'return=representation';
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/franjas_horarias?id=eq.${slotId}`,
+            `${window.API_BASE}/api/slots/${encodeURIComponent(slotId)}`,
             {
                 method: 'PATCH',
-                headers,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(slotData)
             }
         );
@@ -310,10 +313,12 @@ async function updateSlot(slotId, slotData) {
 async function deleteSlot(slotId) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/franjas_horarias?id=eq.${slotId}`,
+            `${window.API_BASE}/api/slots/${encodeURIComponent(slotId)}`,
             {
                 method: 'DELETE',
-                headers: await getAuthHeader()
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
         );
 
@@ -375,10 +380,12 @@ async function createStaff(staffData) {
 async function updateStaff(staffId, staffData) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/personal?id=eq.${staffId}`,
+            `${window.API_BASE}/api/staff/${encodeURIComponent(staffId)}`,
             {
                 method: 'PATCH',
-                headers: await getAuthHeader(),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(staffData)
             }
         );
@@ -433,10 +440,12 @@ async function createEquipment(equipmentData) {
 async function updateEquipment(equipmentId, equipmentData) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/equipment?id=eq.${equipmentId}`,
+            `${window.API_BASE}/api/equipment/${encodeURIComponent(equipmentId)}`,
             {
                 method: 'PATCH',
-                headers: await getAuthHeader(),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(equipmentData)
             }
         );

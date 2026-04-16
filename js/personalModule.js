@@ -256,13 +256,11 @@ async function confirmDeleteStaff(staffId) {
 async function deleteStaff(staffId) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/personal?id=eq.${staffId}`,
+            `${window.API_BASE}/api/staff/${encodeURIComponent(staffId)}`,
             {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json',
-                    'apikey': window.SUPABASE_ANON_KEY
+                    'Content-Type': 'application/json'
                 }
             }
         );

@@ -515,15 +515,13 @@ function changeStatus(reservationId, selectedStatus = null) {
 async function updateReservationStatus(reservationId, newStatus) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/reservas?id=eq.${reservationId}`,
+            `${window.API_BASE}/api/reservations/${encodeURIComponent(reservationId)}/status`,
             {
-                method: 'PATCH',
+                method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json',
-                    'apikey': window.SUPABASE_ANON_KEY
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ estado: newStatus })
+                body: JSON.stringify({ status: newStatus })
             }
         );
         
@@ -556,14 +554,11 @@ async function confirmCancelReservation(reservationId) {
 async function deleteReservation(reservationId) {
     try {
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/reservas?id=eq.${encodeURIComponent(reservationId)}`,
+            `${window.API_BASE}/api/reservations/${encodeURIComponent(reservationId)}`,
             {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-                    'Content-Type': 'application/json',
-                    'apikey': window.SUPABASE_ANON_KEY,
-                    'Prefer': 'return=representation'
+                    'Content-Type': 'application/json'
                 }
             }
         );
@@ -571,15 +566,6 @@ async function deleteReservation(reservationId) {
         if (!response.ok) {
             const errorText = await response.text();
             throw new Error(errorText || 'Error eliminando reserva');
-        }
-
-        // Con return=representation esperamos filas borradas para confirmar la eliminacion.
-        if (response.status !== 204) {
-            const bodyText = await response.text();
-            const deletedRows = bodyText ? JSON.parse(bodyText) : [];
-            if (Array.isArray(deletedRows) && deletedRows.length === 0) {
-                throw new Error('La reserva no se eliminó. Revisa permisos RLS en Supabase.');
-            }
         }
 
         await loadReservations();
@@ -719,8 +705,14 @@ async function validateQRToken(token) {
 
     try {
         const response = await fetch(
-            `${window.API_BASE}/api/qr-lookup?token=${encodeURIComponent(parsedToken)}`,
-            { method: 'GET' }
+            `${window.API_BASE}/api/qr-validate-and-complete`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: parsedToken })
+            }
         );
 
         if (!response.ok) {
