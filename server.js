@@ -88,6 +88,8 @@ app.get('/api/get-staff', async (req, res) => {
 app.get('/api/get-reservations', async (req, res) => {
     try {
         const { estado } = req.query;
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
         let query = supabase
             .from('reservas')
@@ -124,15 +126,31 @@ app.get('/api/get-reservations', async (req, res) => {
 
         const enrichedRows = reservationRows.map(r => {
             const slot = slotsMap.get(String(r.id_franja_horaria));
+            let normalizedStatus = String(r.estado || '').toLowerCase().trim();
+
+            // Normalizacion visual: una reserva activa de fecha pasada se muestra como completada.
+            // Esto evita inconsistencias donde aparece "Activa" en dias ya vencidos.
+            if (normalizedStatus === 'active' && slot?.fecha) {
+                const slotDate = new Date(`${slot.fecha}T00:00:00`);
+                if (!Number.isNaN(slotDate.getTime()) && slotDate < todayStart) {
+                    normalizedStatus = 'completed';
+                }
+            }
+
             return {
                 ...r,
+                estado: normalizedStatus,
                 hora_inicio: slot?.hora_inicio || null,
                 hora_fin: slot?.hora_fin || null,
                 fecha_horario: slot?.fecha || null
             };
         });
 
-        return res.status(200).json(enrichedRows);
+        const filteredRows = estado
+            ? enrichedRows.filter((row) => String(row.estado || '').toLowerCase().trim() === String(estado).toLowerCase().trim())
+            : enrichedRows;
+
+        return res.status(200).json(filteredRows);
     } catch (error) {
         console.error('❌ ERROR en /api/get-reservations:', error.message);
         return res.status(500).json({ error: error.message, data: [] });
@@ -194,6 +212,12 @@ async function findReservationByTokenOrId(token) {
 async function completeReservationBySource(reservationId) {
     const nowIso = new Date().toISOString();
 
+    const { data: reservationRow } = await supabase
+        .from('reservas')
+        .select('id_usuario, id_franja_horaria')
+        .eq('id', reservationId)
+        .maybeSingle();
+
     const payloadCandidates = [
         { estado: 'completed', fecha_actualizacion: nowIso, completed_at: nowIso },
         { estado: 'completed', fecha_actualizacion: nowIso },
@@ -226,6 +250,49 @@ async function completeReservationBySource(reservationId) {
         .maybeSingle();
 
     const completed = String(verifyRow?.estado || '').toLowerCase().trim() === 'completed';
+
+    if (completed && reservationRow?.id_usuario) {
+        try {
+            let fecha = '';
+            let horaInicio = '';
+            let horaFin = '';
+
+            if (reservationRow.id_franja_horaria) {
+                const { data: slotData } = await supabase
+                    .from('franjas_horarias')
+                    .select('fecha, hora_inicio, hora_fin')
+                    .eq('id', reservationRow.id_franja_horaria)
+                    .maybeSingle();
+
+                fecha = slotData?.fecha || '';
+                horaInicio = slotData?.hora_inicio || '';
+                horaFin = slotData?.hora_fin || '';
+            }
+
+            await supabase
+                .from('notificaciones_historial')
+                .insert({
+                    usuario_id: reservationRow.id_usuario,
+                    titulo: 'Reserva completada',
+                    cuerpo: fecha && horaInicio
+                        ? `Tu reserva de ${fecha}, ${horaInicio} - ${horaFin} fue completada.`
+                        : 'Tu reserva fue marcada como completada.',
+                    tipo: 'reserva_completada',
+                    datos: {
+                        reserva_id: reservationId,
+                        franja_id: reservationRow.id_franja_horaria || null,
+                        fecha,
+                        hora_inicio: horaInicio,
+                        hora_fin: horaFin
+                    },
+                    entregada: true,
+                    abierta: false
+                });
+        } catch (_) {
+            // No bloquear validacion de QR por fallo de notificacion.
+        }
+    }
+
     return { ok: completed, error: completed ? null : 'No se confirmo estado completed en reservas' };
 }
 
