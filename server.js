@@ -458,7 +458,6 @@ async function getServiceNoticeRecipients() {
         if (status === 'inactive' || status === 'inactivo' || status === 'blocked' || status === 'bloqueado') continue;
 
         if (user?.id) recipients.add(String(user.id));
-        if (user?.id_autenticacion) recipients.add(String(user.id_autenticacion));
     }
 
     return Array.from(recipients);
