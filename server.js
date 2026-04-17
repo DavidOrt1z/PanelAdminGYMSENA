@@ -209,6 +209,59 @@ async function findReservationByTokenOrId(token) {
     return reservation;
 }
 
+async function sendCompletedReservationNotification({ userId, reservationId, slotId }) {
+    if (!userId) return;
+
+    let fecha = '';
+    let horaInicio = '';
+    let horaFin = '';
+
+    if (slotId) {
+        const { data: slotData } = await supabase
+            .from('franjas_horarias')
+            .select('fecha, hora_inicio, hora_fin')
+            .eq('id', slotId)
+            .maybeSingle();
+
+        fecha = slotData?.fecha || '';
+        horaInicio = slotData?.hora_inicio || '';
+        horaFin = slotData?.hora_fin || '';
+    }
+
+    const notificationBase = {
+        titulo: 'Reserva completada',
+        cuerpo: fecha && horaInicio
+            ? `Tu reserva de ${fecha}, ${horaInicio} - ${horaFin} fue completada.`
+            : 'Tu reserva fue marcada como completada.',
+        tipo: 'reserva_completada',
+        datos: {
+            reserva_id: reservationId,
+            franja_id: slotId || null,
+            fecha,
+            hora_inicio: horaInicio,
+            hora_fin: horaFin
+        },
+        entregada: true,
+        abierta: false
+    };
+
+    const userColumns = ['id_usuario_notif', 'id_usuario', 'usuario_id', 'user_id'];
+    for (const userColumn of userColumns) {
+        const { error } = await supabase
+            .from('notificaciones_historial')
+            .insert({
+                ...notificationBase,
+                [userColumn]: userId
+            });
+
+        if (!error) {
+            return;
+        }
+    }
+
+    console.log('⚠️ No se pudo guardar notificación de reserva completada para:', userId);
+}
+
 async function completeReservationBySource(reservationId) {
     const nowIso = new Date().toISOString();
 
@@ -253,41 +306,11 @@ async function completeReservationBySource(reservationId) {
 
     if (completed && reservationRow?.id_usuario) {
         try {
-            let fecha = '';
-            let horaInicio = '';
-            let horaFin = '';
-
-            if (reservationRow.id_franja_horaria) {
-                const { data: slotData } = await supabase
-                    .from('franjas_horarias')
-                    .select('fecha, hora_inicio, hora_fin')
-                    .eq('id', reservationRow.id_franja_horaria)
-                    .maybeSingle();
-
-                fecha = slotData?.fecha || '';
-                horaInicio = slotData?.hora_inicio || '';
-                horaFin = slotData?.hora_fin || '';
-            }
-
-            await supabase
-                .from('notificaciones_historial')
-                .insert({
-                    usuario_id: reservationRow.id_usuario,
-                    titulo: 'Reserva completada',
-                    cuerpo: fecha && horaInicio
-                        ? `Tu reserva de ${fecha}, ${horaInicio} - ${horaFin} fue completada.`
-                        : 'Tu reserva fue marcada como completada.',
-                    tipo: 'reserva_completada',
-                    datos: {
-                        reserva_id: reservationId,
-                        franja_id: reservationRow.id_franja_horaria || null,
-                        fecha,
-                        hora_inicio: horaInicio,
-                        hora_fin: horaFin
-                    },
-                    entregada: true,
-                    abierta: false
-                });
+            await sendCompletedReservationNotification({
+                userId: reservationRow.id_usuario,
+                reservationId,
+                slotId: reservationRow.id_franja_horaria || null
+            });
         } catch (_) {
             // No bloquear validacion de QR por fallo de notificacion.
         }
@@ -306,7 +329,7 @@ async function setReservationStatusById(reservationId, nextStatus) {
 
     const { data: rowInReservas } = await supabase
         .from('reservas')
-        .select('id')
+        .select('id, id_usuario, id_franja_horaria')
         .eq('id', reservationId)
         .maybeSingle();
 
@@ -341,11 +364,24 @@ async function setReservationStatusById(reservationId, nextStatus) {
             .eq('id', reservationId)
             .maybeSingle();
 
+        const verifiedStatus = String(verifyRow?.estado || '').toLowerCase().trim() || normalizedStatus;
+        if (verifiedStatus === 'completed' && rowInReservas?.id_usuario) {
+            try {
+                await sendCompletedReservationNotification({
+                    userId: rowInReservas.id_usuario,
+                    reservationId,
+                    slotId: rowInReservas.id_franja_horaria || null
+                });
+            } catch (_) {
+                // No bloquear cambio de estado por fallo de notificacion.
+            }
+        }
+
         return {
-            ok: String(verifyRow?.estado || '').toLowerCase().trim() === normalizedStatus,
+            ok: verifiedStatus === normalizedStatus,
             code: 200,
             source: 'reservas',
-            status: String(verifyRow?.estado || '').toLowerCase().trim() || normalizedStatus,
+            status: verifiedStatus,
             message: 'Estado actualizado'
         };
     }
