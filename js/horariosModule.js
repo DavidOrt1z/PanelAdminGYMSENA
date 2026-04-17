@@ -56,10 +56,10 @@ async function loadSlots() {
 
         allSlots = slots;
 
-        // Contar reservas activas por slot_id
+        // Contar reservas activas y completadas por slot_id
         const reservedBySlot = {};
         reservations.forEach(r => {
-            if (r.estado === 'active') {
+            if (r.estado === 'active' || r.estado === 'completed') {
                 reservedBySlot[r.id_franja_horaria] = (reservedBySlot[r.id_franja_horaria] || 0) + 1;
             }
         });
