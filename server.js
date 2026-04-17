@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const { randomUUID } = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -388,6 +389,283 @@ async function setReservationStatusById(reservationId, nextStatus) {
 
     return { ok: false, code: 404, message: 'Reserva no encontrada' };
 }
+
+const SERVICE_NOTICE_TYPES = {
+    cierre_temporal: 'aviso_cierre_temporal',
+    habilitacion: 'aviso_habilitacion'
+};
+
+function normalizeServiceNoticeType(rawType) {
+    const normalized = String(rawType || '').trim().toLowerCase();
+    if (normalized === 'cierre_temporal' || normalized === 'cierre') {
+        return 'cierre_temporal';
+    }
+    if (normalized === 'habilitacion' || normalized === 'habilitación') {
+        return 'habilitacion';
+    }
+    return '';
+}
+
+function isValidDate(value) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim());
+}
+
+function isValidTime(value) {
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(String(value || '').trim());
+}
+
+function isTimeRangeValid(start, end) {
+    const safeStart = String(start || '').trim();
+    const safeEnd = String(end || '').trim();
+    return isValidTime(safeStart) && isValidTime(safeEnd) && safeStart < safeEnd;
+}
+
+function buildServiceNoticeNotificationText(type, fecha, horaInicio, horaFin, mensaje) {
+    const cleanMessage = String(mensaje || '').trim();
+
+    if (type === 'habilitacion') {
+        return {
+            titulo: 'Aviso de habilitacion',
+            cuerpo: cleanMessage
+                ? `El servicio estara habilitado el ${fecha} de ${horaInicio} a ${horaFin}. ${cleanMessage}`
+                : `El servicio estara habilitado el ${fecha} de ${horaInicio} a ${horaFin}.`
+        };
+    }
+
+    return {
+        titulo: 'Aviso de cierre temporal',
+        cuerpo: cleanMessage
+            ? `El servicio estara cerrado temporalmente el ${fecha} de ${horaInicio} a ${horaFin}. ${cleanMessage}`
+            : `El servicio estara cerrado temporalmente el ${fecha} de ${horaInicio} a ${horaFin}.`
+    };
+}
+
+async function getServiceNoticeRecipients() {
+    const { data, error } = await supabase
+        .from('users')
+        .select('id, id_autenticacion, rol, estado');
+
+    if (error) {
+        throw error;
+    }
+
+    const recipients = new Set();
+    for (const user of data || []) {
+        const role = String(user?.rol || '').toLowerCase().trim();
+        const status = String(user?.estado || '').toLowerCase().trim();
+
+        if (role === 'admin') continue;
+        if (status === 'inactive' || status === 'inactivo' || status === 'blocked' || status === 'bloqueado') continue;
+
+        if (user?.id) recipients.add(String(user.id));
+        if (user?.id_autenticacion) recipients.add(String(user.id_autenticacion));
+    }
+
+    return Array.from(recipients);
+}
+
+async function insertServiceNoticeWithColumnFallback(recipientIds, baseNotification) {
+    if (!Array.isArray(recipientIds) || recipientIds.length === 0) {
+        return { ok: true, inserted: 0, userColumn: null };
+    }
+
+    const userColumns = ['id_usuario_notif', 'id_usuario', 'usuario_id', 'user_id'];
+    let lastError = null;
+
+    for (const userColumn of userColumns) {
+        const rows = recipientIds.map((userId) => ({
+            ...baseNotification,
+            [userColumn]: userId
+        }));
+
+        const { error } = await supabase
+            .from('notificaciones_historial')
+            .insert(rows);
+
+        if (!error) {
+            return {
+                ok: true,
+                inserted: rows.length,
+                userColumn
+            };
+        }
+
+        lastError = error;
+    }
+
+    return {
+        ok: false,
+        inserted: 0,
+        userColumn: null,
+        error: lastError
+    };
+}
+
+function mapServiceNoticeHistory(rows) {
+    const grouped = new Map();
+
+    for (const row of rows || []) {
+        const details = row?.datos && typeof row.datos === 'object' ? row.datos : {};
+        const noticeId = String(details.aviso_id || row?.id || randomUUID());
+
+        if (!grouped.has(noticeId)) {
+            const rawType = String(details.tipo_aviso || '').toLowerCase().trim();
+            const fallbackType = String(row?.tipo || '').toLowerCase().includes('habilit') ? 'habilitacion' : 'cierre_temporal';
+            const normalizedType = rawType === 'habilitacion' || rawType === 'habilitación'
+                ? 'habilitacion'
+                : (rawType === 'cierre_temporal' ? 'cierre_temporal' : fallbackType);
+
+            grouped.set(noticeId, {
+                id: noticeId,
+                tipo: normalizedType,
+                titulo: row?.titulo || '',
+                cuerpo: row?.cuerpo || '',
+                mensaje: String(details.mensaje || '').trim(),
+                fecha: details.fecha || null,
+                hora_inicio: details.hora_inicio || null,
+                hora_fin: details.hora_fin || null,
+                destinatarios: Number(details.destinatarios || 0),
+                created_at: row?.fecha_creacion || row?.created_at || null,
+                inserted_rows: 0
+            });
+        }
+
+        const current = grouped.get(noticeId);
+        current.inserted_rows += 1;
+    }
+
+    return Array.from(grouped.values())
+        .map((item) => ({
+            ...item,
+            destinatarios: item.destinatarios > 0 ? item.destinatarios : item.inserted_rows
+        }))
+        .sort((a, b) => {
+            const aTime = new Date(a.created_at || 0).getTime();
+            const bTime = new Date(b.created_at || 0).getTime();
+            return bTime - aTime;
+        });
+}
+
+app.post('/api/notifications/service-notices', async (req, res) => {
+    try {
+        const tipo = normalizeServiceNoticeType(req.body?.tipo);
+        const fecha = String(req.body?.fecha || '').trim();
+        const horaInicio = String(req.body?.hora_inicio || '').trim();
+        const horaFin = String(req.body?.hora_fin || '').trim();
+        const mensaje = String(req.body?.mensaje || '').trim();
+
+        if (!tipo) {
+            return res.status(400).json({ ok: false, message: 'Tipo de aviso invalido' });
+        }
+        if (!isValidDate(fecha)) {
+            return res.status(400).json({ ok: false, message: 'Fecha invalida (usa formato YYYY-MM-DD)' });
+        }
+        if (!isTimeRangeValid(horaInicio, horaFin)) {
+            return res.status(400).json({ ok: false, message: 'Rango horario invalido' });
+        }
+
+        const recipients = await getServiceNoticeRecipients();
+        const avisoId = randomUUID();
+        const { titulo, cuerpo } = buildServiceNoticeNotificationText(tipo, fecha, horaInicio, horaFin, mensaje);
+        const dbType = SERVICE_NOTICE_TYPES[tipo];
+
+        const notificationPayload = {
+            titulo,
+            cuerpo,
+            tipo: dbType,
+            datos: {
+                aviso_id: avisoId,
+                tipo_aviso: tipo,
+                fecha,
+                hora_inicio: horaInicio,
+                hora_fin: horaFin,
+                mensaje,
+                destino: 'usuarios',
+                origen: 'admin_panel_notificaciones',
+                destinatarios: recipients.length,
+                enviado_en: new Date().toISOString()
+            },
+            entregada: true,
+            abierta: false
+        };
+
+        const inserted = await insertServiceNoticeWithColumnFallback(recipients, notificationPayload);
+        if (!inserted.ok) {
+            return res.status(500).json({
+                ok: false,
+                message: inserted.error?.message || 'No se pudo registrar el aviso en notificaciones_historial'
+            });
+        }
+
+        return res.status(201).json({
+            ok: true,
+            message: inserted.inserted > 0
+                ? 'Aviso enviado correctamente'
+                : 'No hay usuarios destinatarios para este aviso',
+            aviso: {
+                id: avisoId,
+                tipo,
+                fecha,
+                hora_inicio: horaInicio,
+                hora_fin: horaFin,
+                mensaje,
+                titulo,
+                cuerpo,
+                destinatarios: inserted.inserted,
+                created_at: new Date().toISOString()
+            }
+        });
+    } catch (error) {
+        console.error('❌ ERROR en POST /api/notifications/service-notices:', error.message);
+        return res.status(500).json({ ok: false, message: 'Error creando aviso de servicio' });
+    }
+});
+
+app.get('/api/notifications/service-notices', async (req, res) => {
+    try {
+        const parsedLimit = Number.parseInt(String(req.query?.limit || ''), 10);
+        const limit = Number.isFinite(parsedLimit) ? Math.min(Math.max(parsedLimit, 1), 300) : 100;
+        const typeFilter = [SERVICE_NOTICE_TYPES.cierre_temporal, SERVICE_NOTICE_TYPES.habilitacion];
+
+        const attempts = [
+            {
+                select: 'id, tipo, titulo, cuerpo, datos, fecha_creacion',
+                orderBy: 'fecha_creacion'
+            },
+            {
+                select: 'id, tipo, titulo, cuerpo, datos, created_at',
+                orderBy: 'created_at'
+            }
+        ];
+
+        let result = null;
+        for (const attempt of attempts) {
+            const response = await supabase
+                .from('notificaciones_historial')
+                .select(attempt.select)
+                .in('tipo', typeFilter)
+                .order(attempt.orderBy, { ascending: false })
+                .limit(limit * 20);
+
+            if (!response.error) {
+                result = response;
+                break;
+            }
+
+            result = response;
+        }
+
+        if (result.error) {
+            return res.status(400).json({ ok: false, message: result.error.message, data: [] });
+        }
+
+        const notices = mapServiceNoticeHistory(result.data || []).slice(0, limit);
+        return res.status(200).json({ ok: true, data: notices });
+    } catch (error) {
+        console.error('❌ ERROR en GET /api/notifications/service-notices:', error.message);
+        return res.status(500).json({ ok: false, message: 'Error obteniendo historial de avisos', data: [] });
+    }
+});
 
 async function buildQrLookupPayload(rawToken, completeActiveReservation = false) {
     const token = parseQrToken(rawToken);

@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal - GYM SENA Admin</title>
+    <title>Notificaciones - GYM SENA Admin</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/personal.css">
+    <link rel="stylesheet" href="css/notificaciones.css">
 </head>
 <body>
     <div class="admin-container">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <img src="assets/images/logo.png" alt="GYM SENA" class="sidebar-logo">
                 <h2>GYM SENA</h2>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="nav-item" data-section="dashboard">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
@@ -51,14 +50,14 @@
                     </svg>
                     <span>Horarios</span>
                 </a>
-                <a href="personal.html" class="nav-item active" data-section="personal">
+                <a href="personal.html" class="nav-item" data-section="personal">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                     <span>Personal</span>
                 </a>
-                <a href="notificaciones.html" class="nav-item" data-section="notificaciones">
+                <a href="notificaciones.html" class="nav-item active" data-section="notificaciones">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                         <path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path>
                         <path d="M10 17a2 2 0 0 0 4 0"></path>
@@ -66,7 +65,7 @@
                     <span>Notificaciones</span>
                 </a>
             </nav>
-            
+
             <div class="sidebar-footer">
                 <div class="admin-info">
                     <div class="admin-avatar">A</div>
@@ -82,12 +81,10 @@
             </div>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Bar -->
             <div class="top-bar">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Buscar personal...">
+                    <input type="text" id="historySearchInput" placeholder="Buscar en historial...">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
@@ -95,95 +92,88 @@
                 </div>
             </div>
 
-            <!-- Content Section -->
             <div class="content">
-                <section class="personal-section">
+                <section class="notificaciones-section">
                     <div class="section-header">
-                        <h1>Gestión de Personal</h1>
-                        <button class="btn btn-primary" id="addStaffBtn">+ Nuevo Personal</button>
+                        <h1>Notificaciones</h1>
                     </div>
 
-                    <!-- Tabla de Personal -->
-                    <div class="section-card">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Posición</th>
-                                    <th>Email</th>
-                                    <th>Teléfono</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="staffTable">
-                                <tr>
-                                    <td colspan="6">Cargando datos...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="notificaciones-grid">
+                        <article class="section-card">
+                            <h2>Enviar aviso</h2>
+                            <form id="serviceNoticeForm" class="notice-form" novalidate>
+                                <div class="form-group">
+                                    <label for="noticeType">Tipo</label>
+                                    <select id="noticeType" required>
+                                        <option value="">Selecciona una opción</option>
+                                        <option value="cierre_temporal">Cierre temporal</option>
+                                        <option value="habilitacion">Habilitación</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="noticeDate">Fecha</label>
+                                    <input type="date" id="noticeDate" required>
+                                </div>
+
+                                <div class="time-row">
+                                    <div class="form-group">
+                                        <label for="noticeStartTime">Hora inicio</label>
+                                        <input type="time" id="noticeStartTime" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="noticeEndTime">Hora fin</label>
+                                        <input type="time" id="noticeEndTime" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="noticeMessage">Mensaje (opcional)</label>
+                                    <textarea id="noticeMessage" rows="4" maxlength="240" placeholder="Ej: mantenimiento de duchas, ingreso por puerta lateral, etc."></textarea>
+                                    <small id="messageCounter" class="helper-text">0 / 240</small>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary" id="sendNoticeBtn">Enviar</button>
+                                </div>
+                            </form>
+                        </article>
+
+                        <article class="section-card">
+                            <div class="history-header">
+                                <h2>Historial de avisos</h2>
+                                <button id="refreshHistoryBtn" class="btn btn-secondary" type="button">Actualizar</button>
+                            </div>
+
+                            <div class="table-wrap">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Fecha</th>
+                                            <th>Horario</th>
+                                            <th>Mensaje</th>
+                                            <th>Enviado a</th>
+                                            <th>Creado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="noticeHistoryTable">
+                                        <tr>
+                                            <td colspan="6">Cargando historial...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
                     </div>
                 </section>
             </div>
         </main>
     </div>
 
-    <!-- Modal Crear/Editar Personal -->
-    <div class="modal" id="staffModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="modalTitle">Nuevo Personal</h2>
-                <button class="close-btn" id="closeStaffModal">&times;</button>
-            </div>
-            <form id="staffForm">
-                <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" id="staffName" required>
-                </div>
-                <div class="form-group">
-                    <label>Posición</label>
-                    <input type="text" id="staffRole" placeholder="Ej: Instructor" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="staffEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Teléfono</label>
-                    <input type="tel" id="staffPhone" required>
-                </div>
-                <div class="form-group" id="passwordGroupWrapper">
-                    <label>Contraseña</label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="staffPassword" placeholder="Contraseña del administrador">
-                        <button type="button" id="togglePasswordVisibilityBtn" class="password-btn" title="Mostrar/Ocultar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-eye">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                        </button>
-                        <button type="button" id="copyPasswordBtn" class="password-btn" title="Copiar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-copy">
-                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                            </svg>
-                        </button>
-                        <button type="button" id="generatePasswordBtn" class="btn-generar">Generar</button>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelStaffBtn">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/confirmDialog.js"></script>
-    <script src="js/personalModule.js"></script>
-    <script src="js/personalPage.js"></script>
+    <script src="js/notificacionesPage.js"></script>
 </body>
 </html>

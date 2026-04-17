@@ -1,0 +1,181 @@
+/* ==================== NOTIFICACIONES PAGE ==================== */
+
+.notificaciones-section {
+    animation: fadeIn 0.25s ease-in-out;
+}
+
+.section-header {
+    margin-bottom: 22px;
+}
+
+.section-header h1 {
+    color: #ffffff;
+    font-size: 28px;
+    margin: 0;
+}
+
+.notificaciones-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.section-card {
+    background: linear-gradient(145deg, #243647 0%, #1a2a35 100%);
+    border: 1px solid rgba(145, 173, 201, 0.2);
+    border-radius: 10px;
+    padding: 24px;
+}
+
+.section-card h2 {
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.notice-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-group {
+    margin: 0;
+}
+
+.form-group label {
+    display: block;
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(145, 173, 201, 0.3);
+    border-radius: 6px;
+    background: #1a2a35;
+    color: #ffffff;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #1273d4;
+    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+}
+
+.form-group input[type="date"],
+.form-group input[type="time"] {
+    color-scheme: dark;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 92px;
+}
+
+.helper-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #91adc9;
+    text-align: right;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.type-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.type-cierre {
+    background: rgba(211, 47, 47, 0.16);
+    color: #ff9e9e;
+}
+
+.type-habilitacion {
+    background: rgba(56, 142, 60, 0.18);
+    color: #9fe3a4;
+}
+
+.message-cell {
+    max-width: 280px;
+    white-space: normal;
+}
+
+@media (max-width: 1200px) {
+    .notificaciones-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .message-cell {
+        max-width: 420px;
+    }
+}
+
+@media (max-width: 768px) {
+    .section-card {
+        padding: 18px;
+    }
+
+    .time-row {
+        grid-template-columns: 1fr;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .history-header .btn {
+        width: 100%;
+    }
+
+    .message-cell {
+        max-width: 220px;
+    }
+}
