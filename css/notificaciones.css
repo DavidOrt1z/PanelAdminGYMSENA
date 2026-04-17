@@ -72,6 +72,11 @@
     font-family: inherit;
 }
 
+.form-group option {
+    background: #1a2a35;
+    color: #ffffff;
+}
+
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
