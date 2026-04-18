@@ -416,7 +416,7 @@ async function startQrScanner() {
     stopQrScanner();
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setQrScannerStatus('Tu navegador no permite camara. Usa token manual.', true);
+        setQrScannerStatus('Tu navegador no permite camara.', true);
         return;
     }
 
@@ -483,25 +483,12 @@ async function startQrScanner() {
                 }
             }, 320);
         } else {
-            setQrScannerStatus('Escaneo automatico no soportado. Usa token manual.');
+            setQrScannerStatus('Escaneo automatico no soportado en este navegador.', true);
         }
     } catch (error) {
         console.error('❌ Error iniciando camara QR:', error);
-        setQrScannerStatus('No se pudo abrir la camara. Revisa permisos o usa token manual.', true);
+        setQrScannerStatus('No se pudo abrir la camara. Revisa permisos de camara.', true);
     }
-}
-
-async function validateManualTokenInput() {
-    const input = document.getElementById('manualQrToken');
-    if (!input) return;
-
-    const token = parseQrToken(input.value);
-    if (!token) {
-        showError('Ingresa un token QR valido');
-        return;
-    }
-
-    await validateQRToken(token);
 }
 
 function changeStatus(reservationId, selectedStatus = null) {
@@ -827,21 +814,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (qrValidatorModal) {
         qrValidatorModal.addEventListener('click', (e) => {
             if (e.target === qrValidatorModal) closeQrValidatorModal();
-        });
-    }
-
-    const validateManualTokenBtn = document.getElementById('validateManualTokenBtn');
-    if (validateManualTokenBtn) {
-        validateManualTokenBtn.addEventListener('click', validateManualTokenInput);
-    }
-
-    const manualQrTokenInput = document.getElementById('manualQrToken');
-    if (manualQrTokenInput) {
-        manualQrTokenInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                validateManualTokenInput();
-            }
         });
     }
 

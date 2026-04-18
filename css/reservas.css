@@ -300,28 +300,6 @@ select.btn-primary option {
     font-size: 14px;
 }
 
-.manual-token-box {
-    margin-top: 14px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-}
-
-.manual-token-box input {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(145, 173, 201, 0.3);
-    background: #1a2c3a;
-    color: #d7e6f5;
-}
-
-.manual-token-box input:focus {
-    outline: none;
-    border-color: #1273D4;
-    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
-}
-
 .qr-result-container {
     padding: 16px 22px 24px;
 }
@@ -385,13 +363,5 @@ select.btn-primary option {
 
     .glass-modal {
         width: 96vw;
-    }
-
-    .manual-token-box {
-        grid-template-columns: 1fr;
-    }
-
-    #validateManualTokenBtn {
-        width: 100%;
     }
 }
