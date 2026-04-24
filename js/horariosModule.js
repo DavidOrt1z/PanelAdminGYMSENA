@@ -5,6 +5,23 @@
 let allSlots = [];
 let currentSearchQuery = '';
 
+function formatTimeWithPeriod(timeValue) {
+    const raw = String(timeValue || '').trim();
+    if (!raw) return '—';
+
+    const hhmm = raw.substring(0, 5);
+    const parts = hhmm.split(':');
+    if (parts.length !== 2) return hhmm;
+
+    const hour24 = Number(parts[0]);
+    const minute = parts[1];
+    if (Number.isNaN(hour24)) return hhmm;
+
+    const period = hour24 >= 12 ? 'PM' : 'AM';
+    const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+    return `${String(hour12).padStart(2, '0')}:${minute} ${period}`;
+}
+
 function normalizeSearchText(value) {
     return String(value || '')
         .normalize('NFD')
@@ -21,6 +38,8 @@ function matchesSlotSearch(slot, query) {
     const dateFormatted = (day && month && year) ? `${day}/${month}/${year}` : '';
     const start = String(slot.hora_inicio || '').substring(0, 5);
     const end = String(slot.hora_fin || '').substring(0, 5);
+    const startWithPeriod = formatTimeWithPeriod(slot.hora_inicio);
+    const endWithPeriod = formatTimeWithPeriod(slot.hora_fin);
 
     const haystack = [
         slot.id,
@@ -28,7 +47,10 @@ function matchesSlotSearch(slot, query) {
         dateFormatted,
         start,
         end,
+        startWithPeriod,
+        endWithPeriod,
         `${start}-${end}`,
+        `${startWithPeriod}-${endWithPeriod}`,
         slot.capacidad,
         slot.cantidad_reservada
     ]
@@ -77,8 +99,8 @@ async function loadSlots() {
             const dateStr     = s.fecha
                 ? `${d}/${m}/${y}`
                 : '—';
-            const startHour   = (s.hora_inicio || '').substring(0, 5);  // '08:00'
-            const endHour     = (s.hora_fin   || '').substring(0, 5);  // '09:00'
+            const startHour   = formatTimeWithPeriod(s.hora_inicio);
+            const endHour     = formatTimeWithPeriod(s.hora_fin);
             const capacity    = s.capacidad || 0;
             const reserved    = reservedBySlot[s.id] ?? s.cantidad_reservada ?? 0;
             const free        = Math.max(0, capacity - reserved);
