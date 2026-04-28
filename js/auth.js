@@ -1,5 +1,11 @@
 // ==================== AUTENTICACIÓN ADMIN ====================
 
+function normalizeRole(rawRole) {
+    const value = String(rawRole || '').toLowerCase().trim();
+    if (value === 'administrador') return 'admin';
+    return value;
+}
+
 async function adminLogin(email, password) {
     try {
         await window.configReady;
@@ -60,7 +66,8 @@ async function adminLogin(email, password) {
         console.log('Usuario encontrado:', user);
 
         // Paso 3: Verificar que sea administrador
-        if (user.rol !== 'admin') {
+        const normalizedRole = normalizeRole(user.rol);
+        if (normalizedRole !== 'admin') {
             console.error('El usuario no tiene rol admin. Rol actual:', user.rol);
             return {
                 success: false,
@@ -76,7 +83,7 @@ async function adminLogin(email, password) {
                 id: user.id,
                 email: user.correo_electronico,
                 name: user.nombre_completo || 'Administrador',
-                role: user.rol
+                role: normalizedRole
             }
         };
     } catch (error) {
