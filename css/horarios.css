@@ -41,14 +41,14 @@
 }
 
 .btn-secondary {
-    background: #243647;
-    color: #91ADC9;
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: #111111;
+    color: #CFCFCF;
+    border: 1px solid rgba(207, 207, 207, 0.2);
 }
 
 .btn-secondary:hover {
-    background: #2d4556;
-    border-color: #91ADC9;
+    background: #1A1A1A;
+    border-color: #CFCFCF;
 }
 
 .btn-secondary img {
@@ -69,13 +69,13 @@
 }
 
 .btn-primary {
-    background-color: #1273D4;
+    background-color: #BA1505;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background-color: #0a56a8;
-    box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    background-color: #8F1004;
+    box-shadow: 0 6px 16px rgba(186, 21, 5, 0.3);
     color: #FFFFFF;
 }
 
@@ -86,8 +86,8 @@
 }
 
 .section-card {
-    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 24px;
     overflow-x: auto;
@@ -152,8 +152,8 @@
 }
 
 .modal-content {
-    background: #243647;
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: #111111;
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 0;
     width: 90%;
@@ -168,7 +168,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 24px 28px;
-    border-bottom: 1px solid rgba(145, 173, 201, 0.2);
+    border-bottom: 1px solid rgba(207, 207, 207, 0.2);
     background: rgba(0, 0, 0, 0.2);
 }
 
@@ -182,7 +182,7 @@
 .close-btn {
     background: none;
     border: none;
-    color: #91ADC9;
+    color: #CFCFCF;
     font-size: 28px;
     cursor: pointer;
     transition: color 0.2s ease;
@@ -225,9 +225,9 @@ form {
 .form-group input {
     width: 100%;
     padding: 14px;
-    border: 1px solid rgba(145, 173, 201, 0.3);
+    border: 1px solid rgba(207, 207, 207, 0.3);
     border-radius: 6px;
-    background: #1a2a35;
+    background: #0D0D0D;
     color: #FFFFFF;
     font-size: 14px;
     transition: all 0.2s ease;
@@ -237,8 +237,8 @@ form {
 
 .form-group input:focus {
     outline: none;
-    border-color: #1273D4;
-    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+    border-color: #BA1505;
+    box-shadow: 0 0 0 3px rgba(186, 21, 5, 0.2);
 }
 
 /* Date/time input fix colores en Chromium */
@@ -252,7 +252,7 @@ form {
     gap: 12px;
     justify-content: flex-end;
     padding-top: 20px;
-    border-top: 1px solid rgba(145, 173, 201, 0.15);
+    border-top: 1px solid rgba(207, 207, 207, 0.15);
     margin-top: 4px;
 }
 

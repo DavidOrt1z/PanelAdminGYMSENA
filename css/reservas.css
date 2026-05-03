@@ -47,13 +47,13 @@
 }
 
 .btn-primary {
-    background-color: #1273D4;
+    background-color: #BA1505;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background-color: #0a56a8;
-    box-shadow: 0 6px 16px rgba(18, 115, 212, 0.3);
+    background-color: #8F1004;
+    box-shadow: 0 6px 16px rgba(186, 21, 5, 0.3);
     color: #FFFFFF;
 }
 
@@ -85,19 +85,19 @@ select.btn-primary:active {
 }
 
 select.btn-primary option {
-    background: #243647;
+    background: #111111;
     color: #FFFFFF;
 }
 
 .btn-secondary {
-    background: #243647;
-    color: #91ADC9;
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: #111111;
+    color: #CFCFCF;
+    border: 1px solid rgba(207, 207, 207, 0.2);
 }
 
 .btn-secondary:hover {
-    background: #2d4556;
-    border-color: #91ADC9;
+    background: #1A1A1A;
+    border-color: #CFCFCF;
 }
 
 .btn-danger {
@@ -114,8 +114,8 @@ select.btn-primary option {
 }
 
 .section-card {
-    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 24px;
     overflow-x: auto;
@@ -150,7 +150,7 @@ select.btn-primary option {
 
 .status-completed {
     background: rgba(33, 150, 243, 0.18);
-    color: #7bc3ff;
+    color: #CFCFCF;
 }
 
 
@@ -165,15 +165,15 @@ select.btn-primary option {
 .status-editor-select {
     min-width: 126px;
     padding: 6px 30px 6px 10px;
-    border: 1px solid rgba(145, 173, 201, 0.28);
+    border: 1px solid rgba(207, 207, 207, 0.28);
     border-radius: 8px;
-    background-color: #22384c;
+    background-color: #1A1A1A;
     color: #cde0f3;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2391ADC9' stroke-width='2'%3E%3Cpath d='M5 7.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23CFCFCF' stroke-width='2'%3E%3Cpath d='M5 7.5l5 5 5-5'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 14px;
@@ -182,12 +182,12 @@ select.btn-primary option {
 
 .status-editor-select:focus {
     outline: none;
-    border-color: #1273D4;
-    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+    border-color: #BA1505;
+    box-shadow: 0 0 0 3px rgba(186, 21, 5, 0.2);
 }
 
 .status-editor-select option {
-    background: #243647;
+    background: #111111;
     color: #FFFFFF;
 }
 
@@ -208,7 +208,7 @@ select.btn-primary option {
 
 .badge-completed {
     background: rgba(33, 150, 243, 0.15);
-    color: #64B5F6;
+    color: #CFCFCF;
 }
 
 .badge-cancelled {
@@ -236,8 +236,8 @@ select.btn-primary option {
 }
 
 .modal-content {
-    background: #243647;
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: #111111;
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 0;
     max-width: 400px;
@@ -250,7 +250,7 @@ select.btn-primary option {
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid rgba(145, 173, 201, 0.2);
+    border-bottom: 1px solid rgba(207, 207, 207, 0.2);
 }
 
 .modal-header h2 {
@@ -261,7 +261,7 @@ select.btn-primary option {
 .close-btn {
     background: none;
     border: none;
-    color: #91ADC9;
+    color: #CFCFCF;
     font-size: 28px;
     cursor: pointer;
 }
@@ -289,14 +289,14 @@ select.btn-primary option {
     width: 100%;
     max-height: 360px;
     border-radius: 12px;
-    border: 1px solid rgba(145, 173, 201, 0.3);
+    border: 1px solid rgba(207, 207, 207, 0.3);
     background: #0f1720;
     object-fit: cover;
 }
 
 .scanner-status {
     margin-top: 12px;
-    color: #91ADC9;
+    color: #CFCFCF;
     font-size: 14px;
 }
 

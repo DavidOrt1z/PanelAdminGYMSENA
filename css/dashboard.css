@@ -18,8 +18,8 @@
 }
 
 .metric-card {
-    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 24px;
     display: flex;
@@ -31,8 +31,8 @@
 }
 
 .metric-card:hover {
-    border-color: #1273D4;
-    box-shadow: 0 8px 24px rgba(18, 115, 212, 0.15);
+    border-color: #BA1505;
+    box-shadow: 0 8px 24px rgba(186, 21, 5, 0.15);
     transform: translateY(-4px);
 }
 
@@ -46,7 +46,7 @@
 }
 
 .metric-content h3 {
-    color: #91ADC9;
+    color: #CFCFCF;
     font-size: 13px;
     font-weight: 500;
     margin-bottom: 8px;
@@ -55,14 +55,14 @@
 }
 
 .metric-value {
-    color: #1273D4;
+    color: #BA1505;
     font-size: 32px;
     font-weight: 700;
 }
 
 .section-card {
-    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 24px;
     margin-top: 30px;

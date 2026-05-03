@@ -7,7 +7,7 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const PORT = process.env.ADMIN_PANEL_PORT || 5500;
 
-console.log('🚀 Iniciando servidor GYM SENA Admin Panel...');
+console.log('🚀 Iniciando servidor JACEK GYM Admin Panel...');
 console.log(`📁 __dirname: ${__dirname}`);
 console.log(`🔧 Variables de entorno cargadas`);
 
@@ -1238,7 +1238,7 @@ app.get('*', (req, res) => {
 // Iniciar servidor - con error handling
 const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n${'='.repeat(50)}`);
-    console.log('✅ GYM SENA Admin Panel - SERVIDOR INICIADO');
+    console.log('✅ JACEK GYM Admin Panel - SERVIDOR INICIADO');
     console.log(`${'='.repeat(50)}`);
     console.log(`🌐 URL: http://localhost:${PORT}`);
     console.log(`📧 Login: http://localhost:${PORT}/login.html`);

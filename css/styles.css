@@ -1,15 +1,15 @@
 /* ==================== ESTILOS GLOBALES ==================== */
 :root {
-    --primary-color: #1273D4;
-    --secondary-color: #91ADC9;
-    --darker-bg: #121A21;
-    --dark-bg: #243647;
+    --primary-color: #BA1505;
+    --secondary-color: #CFCFCF;
+    --darker-bg: #000000;
+    --dark-bg: #111111;
     --light-text: #E0E0E0;
     --white: #FFFFFF;
     --error-color: #D32F2F;
     --success-color: #388E3C;
     --warning-color: #F57C00;
-    --border-color: #364556;
+    --border-color: #262626;
     --transition: all 0.3s ease;
 }
 
@@ -55,9 +55,11 @@ body.sidebar-open {
     padding: 20px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    justify-content: flex-start;
+    gap: 12px;
+    text-align: left;
 }
 
 .logo-container {
@@ -68,18 +70,21 @@ body.sidebar-open {
 }
 
 .sidebar-logo {
-    width: 80px;
-    height: 80px;
+    width: 56px;
+    height: 56px;
     object-fit: contain;
     filter: brightness(1.1);
+    flex-shrink: 0;
 }
 
 .sidebar-header h2 {
-    color: var(--primary-color);
-    font-size: 20px;
-    margin-bottom: 5px;
+    color: var(--white);
+    font-size: 30px;
+    line-height: 1;
+    margin: 0;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.2px;
+    text-transform: none;
 }
 
 .sidebar-header p {
@@ -107,7 +112,7 @@ body.sidebar-open {
 
 .nav-item:hover,
 .nav-item.active {
-    background: rgba(18, 115, 212, 0.1);
+    background: rgba(186, 21, 5, 0.1);
     border-left-color: var(--primary-color);
     color: var(--primary-color);
 }
@@ -156,7 +161,7 @@ body.sidebar-open {
     font-weight: bold;
     font-size: 24px;
     margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(18, 115, 212, 0.2);
+    box-shadow: 0 2px 8px rgba(186, 21, 5, 0.2);
 }
 
 .admin-details {
@@ -243,8 +248,8 @@ body.sidebar-open {
     width: 42px;
     height: 42px;
     border-radius: 10px;
-    border: 1px solid rgba(145, 173, 201, 0.35);
-    background: rgba(18, 115, 212, 0.14);
+    border: 1px solid rgba(207, 207, 207, 0.35);
+    background: rgba(186, 21, 5, 0.14);
     color: #d9e9f8;
     cursor: pointer;
     align-items: center;
@@ -300,7 +305,7 @@ body.sidebar-open {
 .search-box input:focus {
     outline: none;
     border-color: var(--primary-color);
-    background: rgba(18, 115, 212, 0.1);
+    background: rgba(186, 21, 5, 0.1);
 }
 
 .search-icon {
@@ -392,7 +397,7 @@ body.sidebar-open {
 }
 
 .metric-card {
-    background: linear-gradient(135deg, #1a3a52 0%, #243647 100%);
+    background: linear-gradient(135deg, #1a3a52 0%, #111111 100%);
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 20px;
@@ -449,7 +454,7 @@ body.sidebar-open {
 }
 
 .data-table thead {
-    background: rgba(18, 115, 212, 0.1);
+    background: rgba(186, 21, 5, 0.1);
     border-bottom: 2px solid var(--primary-color);
 }
 
@@ -469,7 +474,7 @@ body.sidebar-open {
 }
 
 .data-table tbody tr:hover {
-    background: rgba(18, 115, 212, 0.05);
+    background: rgba(186, 21, 5, 0.05);
 }
 
 .data-table tbody td {
@@ -527,7 +532,7 @@ body.sidebar-open {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(18, 115, 212, 0.3);
+    box-shadow: 0 5px 15px rgba(186, 21, 5, 0.3);
 }
 
 .section-header {
@@ -621,7 +626,7 @@ body.sidebar-open {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--primary-color);
-    background: rgba(18, 115, 212, 0.1);
+    background: rgba(186, 21, 5, 0.1);
 }
 
 /* ==================== ACTIVIDAD Y ACCIONES ==================== */
@@ -653,7 +658,7 @@ body.sidebar-open {
 
 .quick-btn {
     padding: 12px;
-    background: rgba(18, 115, 212, 0.1);
+    background: rgba(186, 21, 5, 0.1);
     border: 1px solid var(--primary-color);
     color: var(--primary-color);
     border-radius: 6px;
@@ -949,8 +954,8 @@ svg.icon {
 
 .app-confirm-modal {
     width: min(92vw, 420px);
-    background: linear-gradient(135deg, #243647 0%, #1a2a35 100%);
-    border: 1px solid rgba(145, 173, 201, 0.22);
+    background: linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
+    border: 1px solid rgba(207, 207, 207, 0.22);
     border-radius: 14px;
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
     padding: 26px 24px 20px;
@@ -962,8 +967,8 @@ svg.icon {
     height: 88px;
     margin: 0 auto 12px;
     border-radius: 50%;
-    border: 3px solid #91ADC9;
-    color: #91ADC9;
+    border: 3px solid #CFCFCF;
+    color: #CFCFCF;
     font-size: 48px;
     font-weight: 700;
     line-height: 82px;
@@ -976,7 +981,7 @@ svg.icon {
 }
 
 .app-confirm-modal p {
-    color: #91ADC9;
+    color: #CFCFCF;
     font-size: 19px;
     margin: 0 0 22px;
 }
@@ -999,11 +1004,11 @@ svg.icon {
 }
 
 .app-confirm-btn-danger {
-    background: #1273D4;
+    background: #BA1505;
 }
 
 .app-confirm-btn-danger:hover {
-    background: #0a56a8;
+    background: #8F1004;
 }
 
 .app-confirm-btn-cancel {

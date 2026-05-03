@@ -252,7 +252,7 @@ function displayReservations(reservations) {
         `;
     });
     
-    tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center;color:#91ADC9;">No hay reservas</td></tr>';
+    tbody.innerHTML = rows.join('') || '<tr><td colspan="6" style="text-align:center;color:#CFCFCF;">No hay reservas</td></tr>';
 }
 
 function filterReservations(status) {
@@ -298,7 +298,7 @@ function showQRCode(reservationId) {
                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrPayload)}" 
                      alt="QR Code" style="width:200px; height:200px;">
             </div>
-            <p style="color:#91ADC9; margin-top:15px;">ID: ${reservationId.substring(0, 8)}...</p>
+            <p style="color:#CFCFCF; margin-top:15px;">ID: ${reservationId.substring(0, 8)}...</p>
         </div>
     `;
     
@@ -337,7 +337,7 @@ function setQrScannerStatus(message, isError = false) {
     const statusEl = document.getElementById('qrScannerStatus');
     if (!statusEl) return;
     statusEl.textContent = message;
-    statusEl.style.color = isError ? '#FF8E8E' : '#91ADC9';
+    statusEl.style.color = isError ? '#FF8E8E' : '#CFCFCF';
 }
 
 function extractTokenFromDecodedQr(decodedValue) {

@@ -22,8 +22,8 @@
 }
 
 .section-card {
-    background: linear-gradient(145deg, #243647 0%, #1a2a35 100%);
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    background: linear-gradient(145deg, #111111 0%, #0D0D0D 100%);
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 10px;
     padding: 24px;
 }
@@ -63,9 +63,9 @@
 .form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid rgba(145, 173, 201, 0.3);
+    border: 1px solid rgba(207, 207, 207, 0.3);
     border-radius: 6px;
-    background: #1a2a35;
+    background: #0D0D0D;
     color: #ffffff;
     font-size: 14px;
     transition: all 0.2s ease;
@@ -73,7 +73,7 @@
 }
 
 .form-group option {
-    background: #1a2a35;
+    background: #0D0D0D;
     color: #ffffff;
 }
 
@@ -81,8 +81,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #1273d4;
-    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.2);
+    border-color: #BA1505;
+    box-shadow: 0 0 0 3px rgba(186, 21, 5, 0.2);
 }
 
 .form-group input[type="date"],
@@ -99,7 +99,7 @@
     display: block;
     margin-top: 6px;
     font-size: 12px;
-    color: #91adc9;
+    color: #CFCFCF;
     text-align: right;
 }
 

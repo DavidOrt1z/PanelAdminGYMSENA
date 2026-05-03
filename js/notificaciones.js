@@ -150,7 +150,7 @@ async function enviarConfirmacionReserva(usuarioId, detallesReserva) {
 async function enviarRecordatorioReserva(usuarioId, detallesReserva) {
     try {
         const titulo = '⏰ Recordatorio de Reserva';
-        const cuerpo = `Tu reserva para GYM SENA es en 30 minutos. ¡No olvides tu DNI!`;
+        const cuerpo = `Tu reserva para JACEK GYM es en 30 minutos. ¡No olvides tu DNI!`;
         
         await enviarNotificacionAUsuario(
             usuarioId,

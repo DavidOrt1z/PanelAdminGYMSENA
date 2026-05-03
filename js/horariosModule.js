@@ -65,7 +65,7 @@ async function loadSlots() {
     const tbody = document.getElementById('slotsTable');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#91ADC9;">Cargando...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#CFCFCF;">Cargando...</td></tr>';
 
     try {
         await window.configReady;
@@ -87,7 +87,7 @@ async function loadSlots() {
         });
 
         if (!allSlots.length) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#91ADC9;">No hay horarios registrados</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#CFCFCF;">No hay horarios registrados</td></tr>';
             return;
         }
 
@@ -128,7 +128,7 @@ async function loadSlots() {
             `;
         });
 
-        tbody.innerHTML = rows.join('') || '<tr><td colspan="7" style="text-align:center;color:#91ADC9;">No se encontraron horarios</td></tr>';
+        tbody.innerHTML = rows.join('') || '<tr><td colspan="7" style="text-align:center;color:#CFCFCF;">No se encontraron horarios</td></tr>';
         console.log(`✅ Horarios cargados: ${allSlots.length}, visibles: ${visibleSlots.length}, Reservas: ${reservations.length}`);
     } catch (error) {
         console.error('❌ Error cargando horarios:', error);

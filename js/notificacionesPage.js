@@ -181,7 +181,7 @@ function applyHistoryFilter() {
     });
 
     if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#91ADC9;">No hay avisos para mostrar</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#CFCFCF;">No hay avisos para mostrar</td></tr>';
         return;
     }
 
@@ -209,7 +209,7 @@ async function loadHistory() {
     const tbody = document.getElementById('noticeHistoryTable');
     if (!tbody) return;
 
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#91ADC9;">Cargando historial...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#CFCFCF;">Cargando historial...</td></tr>';
 
     try {
         serviceNoticeHistory = await fetchServiceNoticeHistory();

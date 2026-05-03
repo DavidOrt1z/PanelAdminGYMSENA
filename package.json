@@ -1,7 +1,7 @@
 {
-  "name": "gym-sena-admin-panel",
+  "name": "JACEK GYM-admin-panel",
   "version": "1.0.0",
-  "description": "Panel de administración - GYM SENA",
+  "description": "Panel de administración - JACEK GYM",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

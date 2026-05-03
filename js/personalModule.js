@@ -58,7 +58,7 @@ function applyStaffSearchFilter() {
     });
 
     const emptyMessage = normalizedQuery ? 'No se encontro personal para la busqueda' : 'No hay personal';
-    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#91ADC9;">${emptyMessage}</td></tr>`;
+    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#CFCFCF;">${emptyMessage}</td></tr>`;
 }
 
 function normalizeStaffStatus(status) {
@@ -408,7 +408,7 @@ function togglePasswordVisibility() {
     if (passwordInput.type === 'password') {
         // Mostrar la contraseña
         passwordInput.type = 'text';
-        toggleBtn.style.color = '#1273D4';
+        toggleBtn.style.color = '#BA1505';
     } else {
         // Ocultar la contraseña
         passwordInput.type = 'password';

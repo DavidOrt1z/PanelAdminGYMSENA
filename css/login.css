@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #0F1A24;
+    background: #000000;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -29,11 +29,21 @@ body {
     top: 30px;
     left: 30px;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .logo-header img {
     width: 60px;
     height: auto;
+}
+
+.logo-header span {
+    color: #FFFFFF;
+    font-size: 44px;
+    line-height: 1;
+    font-weight: 700;
 }
 
 .login-content {
@@ -66,23 +76,23 @@ body {
 .form-group input {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid rgba(145, 173, 201, 0.2);
+    border: 1px solid rgba(207, 207, 207, 0.2);
     border-radius: 8px;
     font-size: 15px;
-    background: #243647;
+    background: #111111;
     color: #FFFFFF;
     transition: all 0.3s ease;
 }
 
 .form-group input::placeholder {
-    color: #91ADC9;
+    color: #CFCFCF;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #1273D4;
-    background: rgba(36, 54, 71, 0.8);
-    box-shadow: 0 0 0 3px rgba(18, 115, 212, 0.15);
+    border-color: #BA1505;
+    background: rgba(17, 17, 17, 0.96);
+    box-shadow: 0 0 0 3px rgba(186, 21, 5, 0.2);
 }
 
 .password-field {
@@ -103,7 +113,7 @@ body {
     border: none;
     border-radius: 8px;
     background: transparent;
-    color: #91ADC9;
+    color: #CFCFCF;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -111,12 +121,12 @@ body {
 }
 
 .password-toggle:hover {
-    background: rgba(145, 173, 201, 0.14);
-    color: #d9e9f8;
+    background: rgba(186, 21, 5, 0.14);
+    color: #FFFFFF;
 }
 
 .password-toggle:focus-visible {
-    outline: 2px solid #1273D4;
+    outline: 2px solid #BA1505;
     outline-offset: 1px;
 }
 
@@ -140,7 +150,7 @@ body {
 .login-button {
     width: 100%;
     padding: 14px;
-    background: #1273D4;
+    background: #BA1505;
     color: #FFFFFF;
     border: none;
     border-radius: 8px;
@@ -157,7 +167,7 @@ body {
 
 .login-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(18, 115, 212, 0.5);
+    box-shadow: 0 10px 30px rgba(186, 21, 5, 0.45);
 }
 
 .login-button:active {
@@ -203,7 +213,7 @@ body {
     left: 0;
     right: 0;
     text-align: center;
-    color: #91ADC9;
+    color: #CFCFCF;
     font-size: 13px;
 }
 

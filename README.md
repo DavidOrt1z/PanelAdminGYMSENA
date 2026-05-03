@@ -1,6 +1,6 @@
-# Panel Admin GYM SENA
+# Panel Admin JACEK GYM
 
-Panel web administrativo para GYM SENA con backend Node.js + Express y conexión a Supabase.
+Panel web administrativo para JACEK GYM con backend Node.js + Express y conexión a Supabase.
 
 ## Requisitos
 

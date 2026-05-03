@@ -1,4 +1,4 @@
-// ⚙️ CONFIGURACIÓN DE SUPABASE - GYM SENA
+// ⚙️ CONFIGURACIÓN DE SUPABASE - JACEK GYM
 
 // URL base del servidor Node.js.
 // En desarrollo local usa localhost:5500; en produccion usa el mismo dominio.

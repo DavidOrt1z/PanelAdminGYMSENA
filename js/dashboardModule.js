@@ -23,7 +23,7 @@ async function loadDashboardData() {
         if (tbody) {
             const activities = stats.recentActivity || [];
             if (activities.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#91ADC9;">Sin actividad reciente</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#CFCFCF;">Sin actividad reciente</td></tr>';
             } else {
                 tbody.innerHTML = activities.map(a => {
                     const dateValue = a.fecha ? new Date(a.fecha) : null;
@@ -38,7 +38,7 @@ async function loadDashboardData() {
                         })
                         : 'N/A';
                     const tipoBadge = a.tipo === 'Personal'
-                        ? `<span style="background:#1273D4;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`
+                        ? `<span style="background:#BA1505;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`
                         : `<span style="background:#2E7D32;color:white;padding:2px 8px;border-radius:4px;font-size:12px;">${a.tipo}</span>`;
                     return `
                         <tr>

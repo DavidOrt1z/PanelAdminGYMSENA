@@ -133,7 +133,7 @@ function renderUsersTable(users, emptyMessage) {
         `;
     });
 
-    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#91ADC9;">${escapeHtml(emptyMessage)}</td></tr>`;
+    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#CFCFCF;">${escapeHtml(emptyMessage)}</td></tr>`;
 }
 
 async function loadUsers() {
