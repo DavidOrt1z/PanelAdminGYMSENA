@@ -179,7 +179,7 @@ async function submitUserForm(e) {
     const name = document.getElementById('userName').value.trim();
     const lastName = document.getElementById('userLastName').value.trim();
     const cedula = document.getElementById('userCedula').value.trim();
-    const role = 'member';
+    const rol = 'usuario';
     
     if (!name || !lastName || !cedula) {
         showError('Por favor completa todos los campos');
@@ -201,6 +201,8 @@ async function submitUserForm(e) {
                         apellido: lastName,
                         cedula,
                         rol,
+                        correo_electronico: `${name.toLowerCase()}.${lastName.toLowerCase()}@gymapp.local`,
+                        estado: 'activo',
                         fecha_actualizacion: new Date().toISOString()
                     })
                 }
@@ -227,6 +229,8 @@ async function submitUserForm(e) {
                         apellido: lastName,
                         cedula,
                         rol,
+                        correo_electronico: `${name.toLowerCase()}.${lastName.toLowerCase()}@gymapp.local`,
+                        estado: 'activo',
                         fecha_creacion: new Date().toISOString()
                     })
                 }
