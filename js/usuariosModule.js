@@ -23,21 +23,13 @@ function normalizeRole(role) {
 }
 
 function getRoleLabel(role) {
-    const normalized = normalizeRole(role);
-    switch (normalized) {
-        case 'admin':
-            return 'Administrador';
-        case 'member':
-            return 'Usuario';
-        default:
-            return 'Usuario';
-    }
+    return 'Usuario';
 }
 
 function getRoleBadgeClass(role) {
-    const normalized = normalizeRole(role);
-    return normalized === 'admin' ? 'badge-admin' : 'badge-member';
+    return 'badge-member';
 }
+
 
 function normalizeStatus(status) {
     const raw = String(status || 'active').toLowerCase().trim();
@@ -156,47 +148,20 @@ function openUserModal(userId = null) {
     const modal = document.getElementById('userModal');
     const title = document.querySelector('#userModal .modal-header h2');
     const form = document.getElementById('userForm');
-    const display = document.querySelector('.select-display');
-    const customSelect = document.getElementById('customUserRole');
-    const hiddenInput = document.getElementById('userRole');
     
     if (userId) {
         title.textContent = 'Editar Usuario';
         const user = allUsers.find(u => u.id === userId);
         if (user) {
             document.getElementById('userName').value = user.nombre_completo || '';
-            document.getElementById('userEmail').value = user.correo_electronico || '';
-            document.getElementById('userEmail').disabled = true; // No permitir cambiar email
-            
-            // Actualizar custom select
-            const role = normalizeRole(user.rol);
-            hiddenInput.value = role;
-            
-            // Actualizar display
-            const options = customSelect.querySelectorAll('.select-option');
-            options.forEach(opt => {
-                if (opt.dataset.value === role) {
-                    const icon = opt.querySelector('svg').outerHTML;
-                    const text = opt.textContent.trim();
-                    display.innerHTML = `<span class="select-value">${icon}<span>${text}</span></span>`;
-                    opt.classList.add('selected');
-                } else {
-                    opt.classList.remove('selected');
-                }
-            });
+            document.getElementById('userLastName').value = user.apellido || '';
+            document.getElementById('userCedula').value = user.cedula || '';
         }
     } else {
-        title.textContent = 'Nuevo Usuario';
+        title.textContent = 'Añadir Usuario';
         form.reset();
-        document.getElementById('userEmail').disabled = false;
-        
-        // Resetear custom select al estado inicial
-        hiddenInput.value = 'member';
-        display.innerHTML = `<span class="select-value"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>Usuario</span></span>`;
-        
-        const options = customSelect.querySelectorAll('.select-option');
-        options.forEach(opt => opt.classList.remove('selected'));
-        options[0].classList.add('selected');
+        document.getElementById('userLastName').value = '';
+        document.getElementById('userCedula').value = '';
     }
     
     modal.classList.add('show');
@@ -212,18 +177,12 @@ async function submitUserForm(e) {
     await window.configReady;
     
     const name = document.getElementById('userName').value.trim();
-    const email = document.getElementById('userEmail').value.trim();
-    const role = normalizeRole(document.getElementById('userRole').value);
+    const lastName = document.getElementById('userLastName').value.trim();
+    const cedula = document.getElementById('userCedula').value.trim();
+    const role = 'member';
     
-    if (!name || !email || !role) {
+    if (!name || !lastName || !cedula) {
         showError('Por favor completa todos los campos');
-        return;
-    }
-
-    // Validar email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showError('Por favor ingresa un email válido');
         return;
     }
     
@@ -239,6 +198,8 @@ async function submitUserForm(e) {
                     },
                     body: JSON.stringify({ 
                         nombre_completo: name, 
+                        apellido: lastName,
+                        cedula,
                         rol,
                         fecha_actualizacion: new Date().toISOString()
                     })
@@ -263,7 +224,8 @@ async function submitUserForm(e) {
                     },
                     body: JSON.stringify({ 
                         nombre_completo: name, 
-                        correo_electronico: email, 
+                        apellido: lastName,
+                        cedula,
                         rol,
                         fecha_creacion: new Date().toISOString()
                     })
@@ -423,7 +385,10 @@ function showSuccess(msg) {
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     checkAdminAuth();
-    loadUsers();
+    loadUsers().catch((error) => {
+        console.error('❌ Error inicializando usuarios:', error);
+        showError(error.message || 'No se pudieron cargar los usuarios');
+    });
     
     const form = document.getElementById('userForm');
     if (form) form.addEventListener('submit', submitUserForm);

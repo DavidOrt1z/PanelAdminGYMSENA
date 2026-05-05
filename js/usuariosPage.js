@@ -27,10 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'userModal') closeUserModal();
     });
 
-    const customSelect = document.getElementById('customUserRole');
-    if (customSelect) {
-        setupCustomSelect();
-    }
+    // El rol en usuarios es fijo "Usuario"; no se inicializa custom select.
 });
 
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
@@ -39,38 +36,4 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
     }
 });
 
-function setupCustomSelect() {
-    const customSelect = document.getElementById('customUserRole');
-    const hiddenInput = document.getElementById('userRole');
-    const display = customSelect.querySelector('.select-display');
-    const options = customSelect.querySelectorAll('.select-option');
-    const optionsContainer = customSelect.querySelector('.select-options');
-
-    display.addEventListener('click', (e) => {
-        e.stopPropagation();
-        optionsContainer.classList.toggle('show');
-    });
-
-    options.forEach(option => {
-        option.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const value = option.dataset.value;
-            const icon = option.querySelector('svg').outerHTML;
-            const text = option.textContent.trim();
-
-            hiddenInput.value = value;
-            display.innerHTML = `<span class="select-value">${icon}<span>${text}</span></span>`;
-
-            options.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
-            optionsContainer.classList.remove('show');
-        });
-    });
-
-    document.addEventListener('click', () => {
-        optionsContainer.classList.remove('show');
-    });
-
-    options[0].classList.add('selected');
-    hiddenInput.value = 'member';
-}
+function setupCustomSelect() {}

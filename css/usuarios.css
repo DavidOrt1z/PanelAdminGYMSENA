@@ -42,7 +42,7 @@
 }
 
 .btn-primary {
-    background-color: #BA1505;
+    background: #BA1505;
     color: #FFFFFF;
 }
 
@@ -164,6 +164,9 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.3s ease;
     overflow: hidden;
+    max-height: min(92vh, 900px);
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-header {
@@ -203,6 +206,7 @@
 
 form {
     padding: 28px;
+    overflow-y: auto;
 }
 
 .form-group {
@@ -369,7 +373,12 @@ form {
     justify-content: flex-end;
     padding: 24px 28px;
     border-top: 1px solid rgba(207, 207, 207, 0.2);
-    background: rgba(0, 0, 0, 0.1);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
 }
 
 .form-actions .btn {

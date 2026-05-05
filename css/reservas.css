@@ -47,7 +47,7 @@
 }
 
 .btn-primary {
-    background-color: #BA1505;
+    background: #BA1505;
     color: #FFFFFF;
 }
 
@@ -86,6 +86,12 @@ select.btn-primary:active {
 
 select.btn-primary option {
     background: #111111;
+    color: #FFFFFF;
+}
+
+select.btn-primary option:checked,
+select.btn-primary option:hover {
+    background: #BA1505;
     color: #FFFFFF;
 }
 
@@ -188,6 +194,12 @@ select.btn-primary option {
 
 .status-editor-select option {
     background: #111111;
+    color: #FFFFFF;
+}
+
+.status-editor-select option:checked,
+.status-editor-select option:hover {
+    background: #BA1505;
     color: #FFFFFF;
 }
 
