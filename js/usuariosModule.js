@@ -6,6 +6,22 @@ let currentUserId = null;
 let allUsers = [];
 let currentSearchQuery = '';
 
+function slugPart(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '.')
+        .replace(/^\.+|\.+$/g, '');
+}
+
+function buildSyntheticEmail(name, lastName, cedula) {
+    const first = slugPart(name) || 'usuario';
+    const last = slugPart(lastName) || 'gym';
+    const doc = String(cedula || '').replace(/\D/g, '').slice(-6) || '000000';
+    return `${first}.${last}.${doc}@gymapp.local`;
+}
+
 function escapeHtml(value) {
     return String(value ?? '')
         .replace(/&/g, '&amp;')
@@ -148,6 +164,7 @@ function openUserModal(userId = null) {
     const modal = document.getElementById('userModal');
     const title = document.querySelector('#userModal .modal-header h2');
     const form = document.getElementById('userForm');
+    const roleSelect = document.getElementById('userRole');
     
     if (userId) {
         title.textContent = 'Editar Usuario';
@@ -156,12 +173,14 @@ function openUserModal(userId = null) {
             document.getElementById('userName').value = user.nombre_completo || '';
             document.getElementById('userLastName').value = user.apellido || '';
             document.getElementById('userCedula').value = user.cedula || '';
+            if (roleSelect) roleSelect.value = 'member';
         }
     } else {
         title.textContent = 'Añadir Usuario';
         form.reset();
         document.getElementById('userLastName').value = '';
         document.getElementById('userCedula').value = '';
+        if (roleSelect) roleSelect.value = 'member';
     }
     
     modal.classList.add('show');
@@ -179,9 +198,11 @@ async function submitUserForm(e) {
     const name = document.getElementById('userName').value.trim();
     const lastName = document.getElementById('userLastName').value.trim();
     const cedula = document.getElementById('userCedula').value.trim();
-    const rol = 'usuario';
+    const rol = 'member';
+    const estado = 'active';
+    const correo = buildSyntheticEmail(name, lastName, cedula);
     
-    if (!name || !lastName || !cedula) {
+    if (!name || !lastName || !cedula || !rol) {
         showError('Por favor completa todos los campos');
         return;
     }
@@ -201,8 +222,8 @@ async function submitUserForm(e) {
                         apellido: lastName,
                         cedula,
                         rol,
-                        correo_electronico: `${name.toLowerCase()}.${lastName.toLowerCase()}@gymapp.local`,
-                        estado: 'activo',
+                        correo_electronico: correo,
+                        estado,
                         fecha_actualizacion: new Date().toISOString()
                     })
                 }
@@ -229,8 +250,8 @@ async function submitUserForm(e) {
                         apellido: lastName,
                         cedula,
                         rol,
-                        correo_electronico: `${name.toLowerCase()}.${lastName.toLowerCase()}@gymapp.local`,
-                        estado: 'activo',
+                        correo_electronico: correo,
+                        estado,
                         fecha_creacion: new Date().toISOString()
                     })
                 }
