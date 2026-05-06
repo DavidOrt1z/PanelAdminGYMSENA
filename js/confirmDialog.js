@@ -82,7 +82,7 @@ function showLogoutConfirm() {
                 <h3 id="logoutConfirmTitle">¿Cerrar sesión?</h3>
                 <p>Se cerrará tu sesión en el panel de administrador</p>
                 <div class="logout-confirm-actions">
-                    <button type="button" class="logout-confirm-btn logout-confirm-btn-logout" id="logoutConfirmOk">Cerrar sesión</button>
+                    <button type="button" class="logout-confirm-btn logout-confirm-btn-danger" id="logoutConfirmOk">Cerrar sesión</button>
                     <button type="button" class="logout-confirm-btn logout-confirm-btn-cancel" id="logoutConfirmCancel">Cancelar</button>
                 </div>
             </div>

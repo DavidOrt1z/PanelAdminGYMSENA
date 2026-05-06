@@ -1,6 +1,24 @@
 const passwordInput = document.getElementById('password');
 const togglePasswordBtn = document.getElementById('togglePasswordBtn');
 
+function ensureGymLoader(submitButton) {
+    if (!submitButton) return null;
+    let loader = submitButton.querySelector('.gym-loader');
+    if (loader) return loader;
+
+    loader = document.createElement('div');
+    loader.className = 'gym-loader';
+    loader.innerHTML = `
+        <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle class="dumbbell-weight" cx="20" cy="40" r="14"></circle>
+            <rect class="dumbbell-bar" x="40" y="36" width="40" height="8" rx="4"></rect>
+            <circle class="dumbbell-weight" cx="100" cy="40" r="14"></circle>
+        </svg>
+    `;
+    submitButton.appendChild(loader);
+    return loader;
+}
+
 togglePasswordBtn?.addEventListener('click', () => {
     if (!passwordInput) return;
 
@@ -19,9 +37,12 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
     const submitButton = document.getElementById('submitButton');
     const errorMessage = document.getElementById('errorMessage');
+    const gymLoader = ensureGymLoader(submitButton);
+    const legacySpinner = submitButton?.querySelector('.spinner');
 
-    submitButton.querySelector('.text').style.display = 'none';
-    submitButton.querySelector('.gym-loader').style.display = 'block';
+    submitButton.classList.add('is-loading');
+    if (legacySpinner) legacySpinner.style.display = 'none';
+    if (gymLoader) gymLoader.style.display = 'block';
     submitButton.disabled = true;
 
     try {
@@ -39,8 +60,8 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         errorMessage.textContent = 'Error: ' + error.message;
         errorMessage.style.display = 'block';
     } finally {
-        submitButton.querySelector('.text').style.display = 'inline';
-        submitButton.querySelector('.gym-loader').style.display = 'none';
+        submitButton.classList.remove('is-loading');
+        if (gymLoader) gymLoader.style.display = 'none';
         submitButton.disabled = false;
     }
 });
