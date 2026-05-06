@@ -23,8 +23,9 @@ const getAuthToken = async () => {
 async function getUsers() {
     try {
         await window.configReady;
+        // Excluir administradores (rol='admin') de la lista de usuarios
         const response = await fetch(
-            `${window.SUPABASE_URL}/rest/v1/users?select=*&order=fecha_creacion.desc`,
+            `${window.SUPABASE_URL}/rest/v1/users?select=*&rol=neq.admin&order=fecha_creacion.desc`,
             {
                 method: 'GET',
                 headers: await getAuthHeader()
