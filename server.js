@@ -699,7 +699,7 @@ async function buildQrLookupPayload(rawToken, completeActiveReservation = false)
     if (userId) {
         const { data: userData } = await supabase
             .from('users')
-            .select('id, id_autenticacion, nombre_completo, nombre, apellido, correo_electronico, email')
+            .select('id, id_autenticacion, nombre, apellido, cedula, correo_electronico, email')
             .or(`id.eq.${userId},id_autenticacion.eq.${userId}`)
             .order('fecha_creacion', { ascending: false })
             .limit(1)
@@ -734,8 +734,8 @@ async function buildQrLookupPayload(rawToken, completeActiveReservation = false)
 
     const isValidReservation = estadoFinal === 'active' || estadoFinal === 'completed';
 
-    let userName = user?.nombre_completo
-        || [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim()
+    let userName = [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim()
+        || user?.nombre
         || null;
     let userEmail = user?.correo_electronico || user?.email || null;
 
@@ -756,7 +756,7 @@ async function buildQrLookupPayload(rawToken, completeActiveReservation = false)
     if (userEmail && !userName) {
         const { data: userByEmailData, error: userByEmailError } = await supabase
             .from('users')
-            .select('nombre_completo, nombre, apellido, correo_electronico, email')
+            .select('nombre, apellido, cedula, correo_electronico, email')
             .or(`correo_electronico.eq.${userEmail},email.eq.${userEmail}`)
             .order('fecha_creacion', { ascending: false })
             .limit(1)
@@ -764,8 +764,8 @@ async function buildQrLookupPayload(rawToken, completeActiveReservation = false)
 
         if (!userByEmailError && userByEmailData) {
             userName = userName
-                || userByEmailData.nombre_completo
                 || [userByEmailData.nombre, userByEmailData.apellido].filter(Boolean).join(' ').trim()
+                || userByEmailData.nombre
                 || null;
             userEmail = userEmail || userByEmailData.correo_electronico || userByEmailData.email || null;
         }
