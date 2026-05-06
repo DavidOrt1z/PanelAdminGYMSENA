@@ -21,7 +21,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const errorMessage = document.getElementById('errorMessage');
 
     submitButton.querySelector('.text').style.display = 'none';
-    submitButton.querySelector('.spinner').style.display = 'block';
+    submitButton.querySelector('.gym-loader').style.display = 'block';
     submitButton.disabled = true;
 
     try {
@@ -40,7 +40,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         errorMessage.style.display = 'block';
     } finally {
         submitButton.querySelector('.text').style.display = 'inline';
-        submitButton.querySelector('.spinner').style.display = 'none';
+        submitButton.querySelector('.gym-loader').style.display = 'none';
         submitButton.disabled = false;
     }
 });

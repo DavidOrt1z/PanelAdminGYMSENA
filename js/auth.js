@@ -208,8 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            if (confirm('¿Está seguro de que desea cerrar sesión?')) {
+        logoutBtn.addEventListener('click', async () => {
+            const confirmed = await showLogoutConfirm();
+            if (confirmed) {
                 logoutAdmin();
             }
         });

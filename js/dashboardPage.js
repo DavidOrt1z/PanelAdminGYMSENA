@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-    if (confirm('¿Esta seguro de que desea cerrar sesion?')) {
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    const confirmed = await showLogoutConfirm();
+    if (confirmed) {
         logoutAdmin();
     }
 });

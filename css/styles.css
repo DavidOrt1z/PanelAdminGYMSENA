@@ -1057,6 +1057,104 @@ svg.icon {
     background: #b71c1c;
 }
 
+/* ==================== LOGOUT CONFIRM MODAL ==================== */
+.logout-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 26, 33, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 12001;
+    animation: fadeIn 0.18s ease-out;
+}
+
+.logout-confirm-overlay.closing {
+    animation: fadeOut 0.18s ease-out;
+}
+
+.logout-confirm-modal {
+    width: min(92vw, 420px);
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 1px solid rgba(186, 21, 5, 0.3);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(186, 21, 5, 0.25);
+    padding: 26px 24px 20px;
+    text-align: center;
+}
+
+.logout-confirm-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    border: 3px solid #BA1505;
+    background: rgba(186, 21, 5, 0.1);
+    color: #BA1505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-confirm-icon svg {
+    width: 40px;
+    height: 40px;
+    stroke-width: 2.5;
+}
+
+.logout-confirm-modal h3 {
+    color: #FFFFFF;
+    font-size: 24px;
+    margin: 4px 0 8px;
+    font-weight: 600;
+}
+
+.logout-confirm-modal p {
+    color: #CFCFCF;
+    font-size: 15px;
+    margin: 0 0 20px;
+}
+
+.logout-confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.logout-confirm-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #FFFFFF;
+    min-width: 140px;
+}
+
+.logout-confirm-btn-logout {
+    background: #BA1505;
+}
+
+.logout-confirm-btn-logout:hover {
+    background: #8F1004;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(186, 21, 5, 0.3);
+}
+
+.logout-confirm-btn-cancel {
+    background: rgba(207, 207, 207, 0.15);
+    color: #CFCFCF;
+}
+
+.logout-confirm-btn-cancel:hover {
+    background: rgba(207, 207, 207, 0.25);
+}
+
 @keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }

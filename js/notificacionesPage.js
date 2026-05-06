@@ -271,8 +271,9 @@ function wirePageEvents() {
         applyHistoryFilter();
     });
 
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        if (confirm('¿Está seguro de que desea cerrar sesión?')) {
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+        const confirmed = await showLogoutConfirm();
+        if (confirmed) {
             logoutAdmin();
         }
     });

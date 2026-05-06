@@ -30,8 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // El rol en usuarios es fijo "Usuario"; no se inicializa custom select.
 });
 
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-    if (confirm('¿Esta seguro de que desea cerrar sesion?')) {
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    const confirmed = await showLogoutConfirm();
+    if (confirmed) {
         logoutAdmin();
     }
 });

@@ -329,7 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadSlots();
     });
 
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        if (confirm('¿Está seguro de que desea cerrar sesión?')) logoutAdmin();
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+        const confirmed = await showLogoutConfirm();
+        if (confirmed) logoutAdmin();
     });
 });
