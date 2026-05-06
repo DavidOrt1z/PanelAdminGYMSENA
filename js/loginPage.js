@@ -10,9 +10,11 @@ function ensureGymLoader(submitButton) {
     loader.className = 'gym-loader';
     loader.innerHTML = `
         <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle class="dumbbell-weight" cx="20" cy="40" r="14"></circle>
-            <rect class="dumbbell-bar" x="40" y="36" width="40" height="8" rx="4"></rect>
-            <circle class="dumbbell-weight" cx="100" cy="40" r="14"></circle>
+            <rect class="dumbbell-plate" x="18" y="22" width="10" height="36" rx="3"></rect>
+            <rect class="dumbbell-plate" x="30" y="24" width="8" height="32" rx="3"></rect>
+            <rect class="dumbbell-bar" x="38" y="35" width="44" height="10" rx="5"></rect>
+            <rect class="dumbbell-plate" x="82" y="24" width="8" height="32" rx="3"></rect>
+            <rect class="dumbbell-plate" x="92" y="22" width="10" height="36" rx="3"></rect>
         </svg>
     `;
     submitButton.appendChild(loader);

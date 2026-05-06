@@ -212,24 +212,24 @@ body {
 /* Loader de pesas para el gym */
 .gym-loader {
     display: none;
-    width: 74px;
-    height: 42px;
+    width: 52px;
+    height: 30px;
     position: relative;
 }
 
 .gym-loader svg {
     width: 100%;
     height: 100%;
-    animation: dumbbell-rotate 1.5s ease-in-out infinite;
+    animation: dumbbell-float 0.9s ease-in-out infinite;
 }
 
-.dumbbell-weight {
-    fill: #FFFFFF;
-    animation: weight-pulse 1.5s ease-in-out infinite;
+.dumbbell-plate {
+    fill: #E8E8E8;
+    animation: plate-pulse 0.9s ease-in-out infinite;
 }
 
 .dumbbell-bar {
-    fill: #1A1A1A;
+    fill: #101010;
 }
 
 .login-button.is-loading .gym-loader {
@@ -240,23 +240,23 @@ body {
     display: none !important;
 }
 
-@keyframes dumbbell-rotate {
-    0%, 100% {
-        transform: rotateZ(0deg);
-        transform-origin: center;
+@keyframes dumbbell-float {
+    0%,
+    100% {
+        transform: translateY(0);
     }
     50% {
-        transform: rotateZ(180deg);
-        transform-origin: center;
+        transform: translateY(-2px);
     }
 }
 
-@keyframes weight-pulse {
-    0%, 100% {
+@keyframes plate-pulse {
+    0%,
+    100% {
         opacity: 1;
     }
     50% {
-        opacity: 0.6;
+        opacity: 0.72;
     }
 }
 
