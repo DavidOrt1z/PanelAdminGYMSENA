@@ -99,7 +99,9 @@ function applyUsersSearchFilter() {
     const filtered = allUsers.filter((u) => {
         const haystack = [
             u.id,
-            u.nombre_completo,
+            u.nombre,
+            u.apellido,
+            u.cedula,
             u.correo_electronico,
             getRoleLabel(u.rol),
             getStatusLabel(u.estado)
@@ -126,11 +128,18 @@ function renderUsersTable(users, emptyMessage) {
         const statusLabel = getStatusLabel(statusValue);
         const statusClass = getStatusBadgeClass(statusValue);
 
+        // Mostrar "No completado" si el email está vacío o es un email sintético
+        const emailDisplay = u.correo_electronico && u.correo_electronico.includes('@') 
+            ? (u.correo_electronico.includes('@gymapp.local') ? 'No completado' : escapeHtml(u.correo_electronico))
+            : 'No completado';
+
         return `
             <tr>
                 <td>${escapeHtml(String(u.id || '').substring(0, 8))}...</td>
-                <td>${escapeHtml(u.nombre_completo || 'N/A')}</td>
-                <td>${escapeHtml(u.correo_electronico || 'N/A')}</td>
+                <td>${escapeHtml(u.nombre || 'N/A')}</td>
+                <td>${escapeHtml(u.apellido || 'N/A')}</td>
+                <td>${escapeHtml(u.cedula || 'N/A')}</td>
+                <td>${emailDisplay}</td>
                 <td><span class="badge ${roleClass}">${escapeHtml(roleLabel)}</span></td>
                 <td><span class="badge ${statusClass}">${escapeHtml(statusLabel)}</span></td>
                 <td>
@@ -141,7 +150,7 @@ function renderUsersTable(users, emptyMessage) {
         `;
     });
 
-    tbody.innerHTML = rows.join('') || `<tr><td colspan="6" style="text-align:center;color:#CFCFCF;">${escapeHtml(emptyMessage)}</td></tr>`;
+    tbody.innerHTML = rows.join('') || `<tr><td colspan="8" style="text-align:center;color:#CFCFCF;">${escapeHtml(emptyMessage)}</td></tr>`;
 }
 
 async function loadUsers() {
@@ -170,7 +179,7 @@ function openUserModal(userId = null) {
         title.textContent = 'Editar Usuario';
         const user = allUsers.find(u => u.id === userId);
         if (user) {
-            document.getElementById('userName').value = user.nombre_completo || '';
+            document.getElementById('userName').value = user.nombre || '';
             document.getElementById('userLastName').value = user.apellido || '';
             document.getElementById('userCedula').value = user.cedula || '';
             if (roleSelect) roleSelect.value = 'member';
@@ -218,7 +227,7 @@ async function submitUserForm(e) {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ 
-                        nombre_completo: name, 
+                        nombre: name, 
                         apellido: lastName,
                         cedula,
                         rol,
@@ -246,7 +255,7 @@ async function submitUserForm(e) {
                         'apikey': window.SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({ 
-                        nombre_completo: name, 
+                        nombre: name, 
                         apellido: lastName,
                         cedula,
                         rol,
