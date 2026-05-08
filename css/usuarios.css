@@ -247,6 +247,83 @@ form {
     line-height: 1.5;
 }
 
+.document-select {
+    position: relative;
+}
+
+.document-select-trigger {
+    width: 100%;
+    padding: 14px 14px;
+    border: 1px solid rgba(207, 207, 207, 0.3);
+    border-radius: 6px;
+    background: #0D0D0D;
+    color: #FFFFFF;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.document-select-trigger:hover,
+.document-select-trigger[aria-expanded="true"] {
+    border-color: #BA1505;
+    box-shadow: 0 0 0 3px rgba(186, 21, 5, 0.14);
+}
+
+.document-select-trigger svg {
+    width: 18px;
+    height: 18px;
+    color: #CFCFCF;
+    flex-shrink: 0;
+}
+
+.document-options {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 8px);
+    display: none;
+    padding: 8px;
+    background: #111111;
+    border: 1px solid rgba(207, 207, 207, 0.18);
+    border-radius: 12px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48);
+    z-index: 20;
+}
+
+.document-options.show {
+    display: block;
+}
+
+.document-option {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #CFCFCF;
+    text-align: left;
+    padding: 12px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.18s ease;
+}
+
+.document-option:hover {
+    background: rgba(186, 21, 5, 0.12);
+    color: #FFFFFF;
+}
+
+.document-option.selected {
+    background: rgba(186, 21, 5, 0.14);
+    border-color: rgba(186, 21, 5, 0.65);
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
 #userRole {
     appearance: none;
     -webkit-appearance: none;

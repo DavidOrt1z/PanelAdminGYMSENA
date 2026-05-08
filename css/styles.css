@@ -169,7 +169,8 @@ body.sidebar-open {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: linear-gradient(145deg, rgba(17, 17, 17, 0.88) 0%, rgba(0, 0, 0, 0.72) 100%);
+    border: 1px solid rgba(186, 21, 5, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,7 +178,9 @@ body.sidebar-open {
     font-weight: bold;
     font-size: 18px;
     margin-bottom: 8px;
-    box-shadow: 0 2px 8px rgba(186, 21, 5, 0.2);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .admin-details {
@@ -251,8 +254,8 @@ body.sidebar-open {
 }
 
 .top-bar {
-    background: var(--dark-bg);
-    border-bottom: 1px solid var(--border-color);
+    background: transparent;
+    border-bottom: none;
     padding: 20px 30px;
     display: flex;
     justify-content: space-between;
@@ -260,6 +263,10 @@ body.sidebar-open {
     position: sticky;
     top: 0;
     z-index: 100;
+}
+
+.top-bar:empty {
+    display: none;
 }
 
 .mobile-menu-btn {
@@ -343,6 +350,35 @@ body.sidebar-open {
 .search-icon {
     stroke: var(--secondary-color);
     color: var(--secondary-color);
+}
+
+.content .section-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 18px !important;
+}
+
+.section-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+}
+
+.section-toolbar .search-box {
+    flex: 0 1 320px;
+}
+
+.section-toolbar .search-box input {
+    width: 100%;
+    min-width: 250px;
+}
+
+.section-toolbar .btn,
+.section-toolbar .reservas-header-actions {
+    flex-shrink: 0;
 }
 
 /* ==================== CONTENT AREA ==================== */
@@ -783,6 +819,17 @@ body.sidebar-open {
     .content {
         padding: 16px;
     }
+
+    .section-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .section-toolbar .search-box,
+    .section-toolbar .search-box input {
+        width: 100%;
+        min-width: 0;
+    }
     
     .metrics-grid {
         grid-template-columns: 1fr;
@@ -889,7 +936,7 @@ svg.icon {
         transition: margin-left 0.3s ease;
     }
     .sidebar:hover ~ .main-content {
-        margin-left: 70px !important;
+        margin-left: 280px !important;
     }
     .sidebar:not(:hover) .sidebar-header h2,
     .sidebar:not(:hover) .sidebar-header p {

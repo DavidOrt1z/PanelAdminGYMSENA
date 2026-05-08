@@ -6,6 +6,9 @@ let currentUserId = null;
 let allUsers = [];
 let currentSearchQuery = '';
 
+let documentTypes = [];
+let currentDocumentTypeId = null;
+
 function slugPart(value) {
     return String(value || '')
         .normalize('NFD')
@@ -20,6 +23,98 @@ function buildSyntheticEmail(name, lastName, cedula) {
     const last = slugPart(lastName) || 'gym';
     const doc = String(cedula || '').replace(/\D/g, '').slice(-6) || '000000';
     return `${first}.${last}.${doc}@gymapp.local`;
+}
+
+function normalizeDocumentName(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function getDefaultDocumentTypeId() {
+    const cc = documentTypes.find((type) => normalizeDocumentName(type.nombre).includes('ciudadania'));
+    return (cc || documentTypes[0])?.id ?? null;
+}
+
+async function loadDocumentTypes() {
+    if (documentTypes.length) return documentTypes;
+
+    const response = await fetch(`${window.SUPABASE_URL}/rest/v1/tipo_documentos?select=id,nombre&order=id.asc`, {
+        headers: {
+            'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+            'apikey': window.SUPABASE_ANON_KEY
+        }
+    });
+
+    if (!response.ok) throw new Error('No se pudieron cargar los tipos de documento');
+    documentTypes = await response.json();
+    renderDocumentOptions();
+    setDocumentType(getDefaultDocumentTypeId());
+    return documentTypes;
+}
+
+function renderDocumentOptions() {
+    const options = document.getElementById('documentTypeOptions');
+    if (!options) return;
+
+    options.innerHTML = documentTypes.map((type) => `
+        <button type="button" class="document-option" data-id="${escapeHtml(type.id)}">
+            ${escapeHtml(type.nombre)}
+        </button>
+    `).join('');
+
+    options.querySelectorAll('.document-option').forEach((option) => {
+        option.addEventListener('click', () => {
+            setDocumentType(option.dataset.id);
+            closeDocumentOptions();
+        });
+    });
+}
+
+function setDocumentType(value) {
+    const numericValue = Number(value);
+    const fallbackId = getDefaultDocumentTypeId();
+    currentDocumentTypeId = documentTypes.some((type) => Number(type.id) === numericValue)
+        ? numericValue
+        : fallbackId;
+
+    const selected = documentTypes.find((type) => Number(type.id) === Number(currentDocumentTypeId));
+    const label = selected?.nombre || 'Cédula de Ciudadanía';
+    const hidden = document.getElementById('documentTypeId');
+    const display = document.getElementById('documentTypeLabel');
+    const numberLabel = document.getElementById('documentNumberLabel');
+    const numberInput = document.getElementById('userCedula');
+
+    if (hidden) hidden.value = currentDocumentTypeId ?? '';
+    if (display) display.textContent = label;
+    if (numberLabel) numberLabel.textContent = label;
+    if (numberInput) {
+        numberInput.placeholder = label;
+        numberInput.setAttribute('aria-label', label);
+    }
+
+    document.querySelectorAll('.document-option').forEach((option) => {
+        option.classList.toggle('selected', Number(option.dataset.id) === Number(currentDocumentTypeId));
+    });
+}
+
+function closeDocumentOptions() {
+    const options = document.getElementById('documentTypeOptions');
+    const trigger = document.getElementById('documentTypeTrigger');
+    options?.classList.remove('show');
+    trigger?.setAttribute('aria-expanded', 'false');
+}
+
+function setupDocumentTypeSelect() {
+    const trigger = document.getElementById('documentTypeTrigger');
+    const options = document.getElementById('documentTypeOptions');
+    if (!trigger || !options) return;
+
+    trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = options.classList.toggle('show');
+        trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    document.addEventListener('click', closeDocumentOptions);
 }
 
 function escapeHtml(value) {
@@ -157,6 +252,7 @@ async function loadUsers() {
     console.log('👥 Cargando usuarios...');
     try {
         await window.configReady;
+        await loadDocumentTypes();
         const users = await getUsers();
         allUsers = users;
         
@@ -182,6 +278,7 @@ function openUserModal(userId = null) {
             document.getElementById('userName').value = user.nombre || '';
             document.getElementById('userLastName').value = user.apellido || '';
             document.getElementById('userCedula').value = user.cedula || '';
+            setDocumentType(user.tipo_documento_id || getDefaultDocumentTypeId());
             if (roleSelect) roleSelect.value = 'member';
         }
     } else {
@@ -189,6 +286,7 @@ function openUserModal(userId = null) {
         form.reset();
         document.getElementById('userLastName').value = '';
         document.getElementById('userCedula').value = '';
+        setDocumentType(getDefaultDocumentTypeId());
         if (roleSelect) roleSelect.value = 'member';
     }
     
@@ -207,11 +305,12 @@ async function submitUserForm(e) {
     const name = document.getElementById('userName').value.trim();
     const lastName = document.getElementById('userLastName').value.trim();
     const cedula = document.getElementById('userCedula').value.trim();
+    const tipoDocumentoId = Number(document.getElementById('documentTypeId')?.value || currentDocumentTypeId);
     const rol = 'member';
     const estado = 'active';
     const correo = buildSyntheticEmail(name, lastName, cedula);
     
-    if (!name || !lastName || !cedula || !rol) {
+    if (!name || !lastName || !cedula || !tipoDocumentoId || !rol) {
         showError('Por favor completa todos los campos');
         return;
     }
@@ -229,6 +328,7 @@ async function submitUserForm(e) {
                     body: JSON.stringify({ 
                         nombre: name, 
                         apellido: lastName,
+                        tipo_documento_id: tipoDocumentoId,
                         cedula,
                         rol,
                         correo_electronico: correo,
@@ -257,6 +357,7 @@ async function submitUserForm(e) {
                     body: JSON.stringify({ 
                         nombre: name, 
                         apellido: lastName,
+                        tipo_documento_id: tipoDocumentoId,
                         cedula,
                         rol,
                         correo_electronico: correo,
@@ -419,6 +520,7 @@ function showSuccess(msg) {
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     checkAdminAuth();
+    setupDocumentTypeSelect();
     loadUsers().catch((error) => {
         console.error('❌ Error inicializando usuarios:', error);
         showError(error.message || 'No se pudieron cargar los usuarios');

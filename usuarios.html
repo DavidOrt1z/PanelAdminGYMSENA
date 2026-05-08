@@ -85,22 +85,23 @@
         <!-- Main Content -->
         <main class="main-content">
             <!-- Top Bar -->
-            <div class="top-bar">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Buscar usuario...">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
-                </div>
-            </div>
+            <div class="top-bar"></div>
 
             <!-- Content Section -->
             <div class="content">
                 <section class="usuarios-section">
                     <div class="section-header">
                         <h1>Gestión de Usuarios</h1>
-                        <button class="btn btn-primary" id="addUserBtn">+ Añadir Usuario</button>
+                        <div class="section-toolbar">
+                            <div class="search-box">
+                                <input type="text" id="searchInput" placeholder="Buscar usuario...">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                            </div>
+                            <button class="btn btn-primary" id="addUserBtn">+ Añadir Usuario</button>
+                        </div>
                     </div>
 
                     <!-- Tabla de Usuarios -->
@@ -147,8 +148,23 @@
                     <input type="text" id="userLastName" required>
                 </div>
                 <div class="form-group">
-                    <label>Cédula</label>
-                    <input type="text" id="userCedula" required inputmode="numeric">
+                    <label>Tipo de Documento</label>
+                    <div class="document-select" id="documentTypeSelect">
+                        <button type="button" class="document-select-trigger" id="documentTypeTrigger" aria-expanded="false">
+                            <span id="documentTypeLabel">Cédula de Ciudadanía</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="document-options" id="documentTypeOptions">
+                            <button type="button" class="document-option selected" data-id="">Cargando...</button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="documentTypeId" value="">
+                </div>
+                <div class="form-group">
+                    <label for="userCedula" id="documentNumberLabel">Cédula de Ciudadanía</label>
+                    <input type="text" id="userCedula" class="form-control" placeholder="Cédula de Ciudadanía" required>
                 </div>
                 <div class="form-group">
                     <label>Rol</label>
