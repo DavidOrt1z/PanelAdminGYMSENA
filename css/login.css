@@ -209,27 +209,19 @@ body {
     animation: spin 1s linear infinite;
 }
 
-/* Loader de pesas para el gym */
+/* Loader de logo animado */
 .gym-loader {
     display: none;
-    width: 52px;
-    height: 30px;
+    width: 42px;
+    height: 42px;
     position: relative;
 }
 
-.gym-loader svg {
+.gym-loader img {
     width: 100%;
     height: 100%;
-    animation: dumbbell-float 0.9s ease-in-out infinite;
-}
-
-.dumbbell-plate {
-    fill: #E8E8E8;
-    animation: plate-pulse 0.9s ease-in-out infinite;
-}
-
-.dumbbell-bar {
-    fill: #101010;
+    object-fit: contain;
+    display: block;
 }
 
 .login-button.is-loading .gym-loader {
@@ -238,26 +230,6 @@ body {
 
 .login-button .spinner {
     display: none !important;
-}
-
-@keyframes dumbbell-float {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-2px);
-    }
-}
-
-@keyframes plate-pulse {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.72;
-    }
 }
 
 @keyframes spin {
