@@ -150,7 +150,7 @@ body {
 .login-button {
     width: 100%;
     padding: 14px;
-    background: #BA1505;
+    background: linear-gradient(135deg, #BA1505 0%, #8F1004 100%);
     color: #FFFFFF;
     border: none;
     border-radius: 8px;
@@ -163,6 +163,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    min-height: 58px;
 }
 
 .login-button .text {
@@ -183,8 +184,8 @@ body {
 }
 
 .login-button:disabled {
-    opacity: 0.7;
     cursor: not-allowed;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 12px 28px rgba(186, 21, 5, 0.28);
 }
 
 .error-message {
@@ -209,19 +210,36 @@ body {
     animation: spin 1s linear infinite;
 }
 
-/* Loader de logo animado */
+/* Loader de triángulo de puntos */
 .gym-loader {
     display: none;
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 34px;
     position: relative;
 }
 
-.gym-loader img {
+.loader-stage {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    display: block;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.16);
+}
+
+.loader-dots {
+    width: 2.5rem;
+    aspect-ratio: 1.154;
+    --grad-start: #FFFFFF;
+    --grad-mid: #CFCFCF;
+    --grad-end: #111111;
+    --_a: no-repeat radial-gradient(farthest-side, var(--grad-start) 90%, transparent);
+    --_b: no-repeat radial-gradient(farthest-side, var(--grad-mid) 90%, transparent);
+    --_c: no-repeat radial-gradient(farthest-side, var(--grad-end) 90%, transparent);
+    background: var(--_a) 50% 0, var(--_b) 0 100%, var(--_c) 100% 100%;
+    background-size: 35% calc(35% * 1.154);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.24));
+    animation: dotTriangle 0.9s infinite;
 }
 
 .login-button.is-loading .gym-loader {
@@ -230,6 +248,13 @@ body {
 
 .login-button .spinner {
     display: none !important;
+}
+
+@keyframes dotTriangle {
+    50%,
+    100% {
+        background-position: 100% 100%, 50% 0, 0 100%;
+    }
 }
 
 @keyframes spin {

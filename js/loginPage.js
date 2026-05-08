@@ -9,7 +9,9 @@ function ensureGymLoader(submitButton) {
     loader = document.createElement('div');
     loader.className = 'gym-loader';
     loader.innerHTML = `
-        <img src="assets/images/login-loader.gif.gif" alt="Cargando">
+        <div class="loader-stage" aria-hidden="true">
+            <div class="loader-dots"></div>
+        </div>
     `;
     submitButton.appendChild(loader);
     return loader;
