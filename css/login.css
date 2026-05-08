@@ -224,21 +224,20 @@ body {
     display: grid;
     place-items: center;
     border-radius: 999px;
-    background: rgba(0, 0, 0, 0.16);
+    background: transparent;
 }
 
 .loader-dots {
     width: 2.5rem;
     aspect-ratio: 1.154;
     --grad-start: #FFFFFF;
-    --grad-mid: #CFCFCF;
+    --grad-mid: #1E88E5;
     --grad-end: #111111;
     --_a: no-repeat radial-gradient(farthest-side, var(--grad-start) 90%, transparent);
     --_b: no-repeat radial-gradient(farthest-side, var(--grad-mid) 90%, transparent);
     --_c: no-repeat radial-gradient(farthest-side, var(--grad-end) 90%, transparent);
     background: var(--_a) 50% 0, var(--_b) 0 100%, var(--_c) 100% 100%;
     background-size: 35% calc(35% * 1.154);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.24));
     animation: dotTriangle 0.9s infinite;
 }
 

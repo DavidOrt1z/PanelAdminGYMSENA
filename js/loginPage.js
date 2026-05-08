@@ -37,6 +37,8 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     const errorMessage = document.getElementById('errorMessage');
     const gymLoader = ensureGymLoader(submitButton);
     const legacySpinner = submitButton?.querySelector('.spinner');
+    const loadingStartedAt = Date.now();
+    let keepLoading = false;
 
     submitButton.classList.add('is-loading');
     if (legacySpinner) legacySpinner.style.display = 'none';
@@ -47,9 +49,15 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         const result = await adminLogin(email, password);
 
         if (result.success) {
+            keepLoading = true;
             localStorage.setItem('adminToken', result.token);
             localStorage.setItem('adminUser', JSON.stringify(result.user));
-            window.location.href = 'dashboard.html';
+            const elapsed = Date.now() - loadingStartedAt;
+            const remainingDelay = Math.max(0, 850 - elapsed);
+
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, remainingDelay);
         } else {
             errorMessage.textContent = result.message || 'Error en la autenticacion';
             errorMessage.style.display = 'block';
@@ -58,6 +66,7 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
         errorMessage.textContent = 'Error: ' + error.message;
         errorMessage.style.display = 'block';
     } finally {
+        if (keepLoading) return;
         submitButton.classList.remove('is-loading');
         if (gymLoader) gymLoader.style.display = 'none';
         submitButton.disabled = false;
