@@ -316,7 +316,8 @@ async function submitUserForm(e) {
     }
     
     try {
-        if (currentUserId) {
+        const wasEditing = !!currentUserId;
+        if (wasEditing) {
             // Editar usuario existente
             const response = await fetch(
                 `${window.API_BASE}/api/users/${encodeURIComponent(currentUserId)}`,
@@ -331,7 +332,6 @@ async function submitUserForm(e) {
                         tipo_documento_id: tipoDocumentoId,
                         cedula,
                         rol,
-                        correo_electronico: correo,
                         estado,
                         fecha_actualizacion: new Date().toISOString()
                     })
@@ -377,7 +377,7 @@ async function submitUserForm(e) {
         closeUserModal();
         await loadUsers();
         
-        if (currentUserId) {
+        if (wasEditing) {
             showSuccess('Usuario editado correctamente');
         } else {
             showSuccess('Usuario creado correctamente');
@@ -519,23 +519,7 @@ function showSuccess(msg) {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    checkAdminAuth();
     setupDocumentTypeSelect();
-    loadUsers().catch((error) => {
-        console.error('❌ Error inicializando usuarios:', error);
-        showError(error.message || 'No se pudieron cargar los usuarios');
-    });
-    
-    const form = document.getElementById('userForm');
-    if (form) form.addEventListener('submit', submitUserForm);
-    
-    const closeBtn = document.querySelector('#userModal .close-btn');
-    if (closeBtn) closeBtn.addEventListener('click', closeUserModal);
-    
-    const modal = document.getElementById('userModal');
-    if (modal) modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeUserModal();
-    });
     
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {

@@ -210,35 +210,30 @@ body {
     animation: spin 1s linear infinite;
 }
 
-/* Loader de triángulo de puntos */
 .gym-loader {
     display: none;
-    width: 52px;
-    height: 34px;
+    width: 96px;
+    height: 48px;
     position: relative;
 }
 
 .loader-stage {
     width: 100%;
     height: 100%;
-    display: grid;
-    place-items: center;
-    border-radius: 999px;
-    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #BA1505;
 }
 
-.loader-dots {
-    width: 2.5rem;
-    aspect-ratio: 1.154;
-    --grad-start: #FFFFFF;
-    --grad-mid: #1E88E5;
-    --grad-end: #111111;
-    --_a: no-repeat radial-gradient(farthest-side, var(--grad-start) 90%, transparent);
-    --_b: no-repeat radial-gradient(farthest-side, var(--grad-mid) 90%, transparent);
-    --_c: no-repeat radial-gradient(farthest-side, var(--grad-end) 90%, transparent);
-    background: var(--_a) 50% 0, var(--_b) 0 100%, var(--_c) 100% 100%;
-    background-size: 35% calc(35% * 1.154);
-    animation: dotTriangle 0.9s infinite;
+.loader-stage img {
+    width: 74px;
+    height: 74px;
+    object-fit: cover;
+    mix-blend-mode: screen;
+    filter: grayscale(1) invert(1) brightness(2.6) contrast(2.4);
 }
 
 .login-button.is-loading .gym-loader {
@@ -247,13 +242,6 @@ body {
 
 .login-button .spinner {
     display: none !important;
-}
-
-@keyframes dotTriangle {
-    50%,
-    100% {
-        background-position: 100% 100%, 50% 0, 0 100%;
-    }
 }
 
 @keyframes spin {

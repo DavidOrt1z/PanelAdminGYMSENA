@@ -1,13 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Los datos del admin se manejan ahora centralizadamente en auth.js
+    // Solo iniciamos la carga de datos específicos si el usuario está autenticado
     const user = checkAdminAuth();
     if (user) {
-        document.getElementById('adminName').textContent = user.name || 'Administrador';
-        document.getElementById('adminEmail').textContent = user.email;
-        const avatar = document.querySelector('.admin-avatar');
-        if (avatar) {
-            avatar.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
-        }
-
         loadDashboardData();
     }
 });

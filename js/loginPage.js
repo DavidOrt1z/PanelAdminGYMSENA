@@ -10,7 +10,7 @@ function ensureGymLoader(submitButton) {
     loader.className = 'gym-loader';
     loader.innerHTML = `
         <div class="loader-stage" aria-hidden="true">
-            <div class="loader-dots"></div>
+            <img src="assets/images/logocargagif.gif" alt="">
         </div>
     `;
     submitButton.appendChild(loader);

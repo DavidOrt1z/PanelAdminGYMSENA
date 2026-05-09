@@ -110,6 +110,13 @@ function checkAdminAuth() {
 function logoutAdmin() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
+    
+    // Limpiar UI antes de redirigir (opcional pero buena práctica)
+    const adminNameEl = document.getElementById('adminName');
+    const adminEmailEl = document.getElementById('adminEmail');
+    if (adminNameEl) adminNameEl.textContent = '...';
+    if (adminEmailEl) adminEmailEl.textContent = '...';
+
     window.location.href = 'login.html';
 }
 
@@ -188,18 +195,26 @@ function setupMobileSidebar() {
 // ==================== VERIFICACIÓN INICIAL ====================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Solo en index.html (dashboard)
-    if (window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/')) {
+    // Verificar en cualquier página del panel (excepto login)
+    if (!window.location.pathname.includes('login.html')) {
         const user = checkAdminAuth();
         
         if (user) {
-            // Llenar datos del usuario
-            document.getElementById('adminName').textContent = user.name || 'Administrador';
-            document.getElementById('adminEmail').textContent = user.email;
-            document.querySelector('.admin-avatar').textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
+            // Llenar datos del usuario si los elementos existen
+            const adminNameEl = document.getElementById('adminName');
+            const adminEmailEl = document.getElementById('adminEmail');
+            const adminAvatarEl = document.querySelector('.admin-avatar');
 
-            // Cargar datos
-            loadDashboardData();
+            if (adminNameEl) adminNameEl.textContent = user.name || 'Administrador';
+            if (adminEmailEl) adminEmailEl.textContent = user.email;
+            if (adminAvatarEl) adminAvatarEl.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'A';
+
+            // Cargar datos específicos de la página si es necesario
+            if (window.location.pathname.includes('dashboard.html') || window.location.pathname.endsWith('/') || window.location.pathname.endsWith('index.html')) {
+                if (typeof loadDashboardData === 'function') {
+                    loadDashboardData();
+                }
+            }
         }
     }
 });

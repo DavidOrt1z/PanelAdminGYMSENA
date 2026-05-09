@@ -838,9 +838,58 @@ app.patch('/api/users/:userId', async (req, res) => {
         const userId = String(req.params.userId || '').trim();
         if (!userId) return res.status(400).json({ ok: false, message: 'ID de usuario invalido' });
 
-        const payload = req.body || {};
+        const body = req.body || {};
+        const payload = {};
+
+        if (Object.prototype.hasOwnProperty.call(body, 'nombre')) {
+            payload.nombre = String(body.nombre || '').trim();
+        }
+        if (Object.prototype.hasOwnProperty.call(body, 'apellido')) {
+            payload.apellido = String(body.apellido || '').trim();
+        }
+        if (Object.prototype.hasOwnProperty.call(body, 'cedula')) {
+            payload.cedula = String(body.cedula || '').trim();
+        }
+        if (Object.prototype.hasOwnProperty.call(body, 'tipo_documento_id')) {
+            const documentTypeId = Number(body.tipo_documento_id);
+            if (!Number.isInteger(documentTypeId) || documentTypeId <= 0) {
+                return res.status(400).json({ ok: false, message: 'Tipo de documento invalido' });
+            }
+            payload.tipo_documento_id = documentTypeId;
+        }
+        if (Object.prototype.hasOwnProperty.call(body, 'rol')) {
+            payload.rol = String(body.rol || 'member').trim() || 'member';
+        }
+        if (Object.prototype.hasOwnProperty.call(body, 'estado')) {
+            payload.estado = String(body.estado || 'active').trim() || 'active';
+        }
+
+        if (!payload.nombre || !payload.apellido || !payload.tipo_documento_id) {
+            return res.status(400).json({ ok: false, message: 'Nombre, apellido y tipo de documento son requeridos' });
+        }
+
+        // Determinar qué columna de identificación usar (cedula o numero_documento)
+        // Probamos ambas si una falla en el updateRowWithTimestampFallback
         const result = await updateRowWithTimestampFallback('users', userId, payload, ['fecha_actualizacion', 'updated_at']);
+        
+        if (!result.ok && result.error?.message?.includes("'cedula'")) {
+            console.log('⚠️ Reintentando con numero_documento en lugar de cedula...');
+            const altPayload = { ...payload };
+            altPayload.numero_documento = payload.cedula;
+            delete altPayload.cedula;
+            
+            const secondResult = await updateRowWithTimestampFallback('users', userId, altPayload, ['fecha_actualizacion', 'updated_at']);
+            if (secondResult.ok) {
+                return res.status(200).json({ ok: true, message: 'Usuario actualizado (vía numero_documento)' });
+            }
+            result.error = secondResult.error;
+        }
+
         if (!result.ok) {
+            const message = String(result.error?.message || 'No se pudo actualizar usuario');
+            if (message.toLowerCase().includes('duplicate') || message.toLowerCase().includes('unique')) {
+                return res.status(409).json({ ok: false, message: 'La identificación ya esta registrada en otro usuario' });
+            }
             return res.status(400).json({ ok: false, message: result.error?.message || 'No se pudo actualizar usuario' });
         }
 

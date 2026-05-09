@@ -204,9 +204,20 @@
     color: #FFFFFF;
 }
 
-form {
-    padding: 28px;
+#userForm {
+    padding: 0;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-fields {
+    padding: 28px 28px 0;
     overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .form-group {
@@ -458,11 +469,10 @@ form {
     justify-content: flex-end;
     padding: 24px 28px;
     border-top: 1px solid rgba(207, 207, 207, 0.2);
-    background: transparent;
+    background: #111111;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    position: sticky;
-    bottom: 0;
+    flex-shrink: 0;
     z-index: 2;
 }
 
