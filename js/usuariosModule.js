@@ -234,7 +234,7 @@ function renderUsersTable(users, emptyMessage) {
                 <td>${escapeHtml(String(u.id || '').substring(0, 8))}...</td>
                 <td>${escapeHtml(u.nombre || 'N/A')}</td>
                 <td>${escapeHtml(u.apellido || 'N/A')}</td>
-                <td>${escapeHtml(u.cedula || 'N/A')}</td>
+                <td>${escapeHtml(u.numero_documento || 'N/A')}</td>
                 <td>${emailDisplay}</td>
                 <td><span class="badge ${roleClass}">${escapeHtml(roleLabel)}</span></td>
                 <td><span class="badge ${statusClass}">${escapeHtml(statusLabel)}</span></td>
@@ -317,7 +317,7 @@ async function submitUserForm(e) {
     const userData = {
         nombre: name,
         apellido: lastName,
-        tipo_documento_id: tipoDocumentoId,
+        Id_tipo_documento: tipoDocumentoId,
         numero_documento: documentNumber,
         rol: rol,
     };
