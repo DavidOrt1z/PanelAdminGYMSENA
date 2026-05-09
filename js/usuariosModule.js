@@ -18,10 +18,10 @@ function slugPart(value) {
         .replace(/^\.+|\.+$/g, '');
 }
 
-function buildSyntheticEmail(name, lastName, cedula) {
+function buildSyntheticEmail(name, lastName, documentNumber) {
     const first = slugPart(name) || 'usuario';
     const last = slugPart(lastName) || 'gym';
-    const doc = String(cedula || '').replace(/\D/g, '').slice(-6) || '000000';
+    const doc = String(documentNumber || '').replace(/\D/g, '').slice(-6) || '000000';
     return `${first}.${last}.${doc}@gymapp.local`;
 }
 
@@ -78,10 +78,11 @@ function setDocumentType(value) {
 
     const selected = documentTypes.find((type) => Number(type.id) === Number(currentDocumentTypeId));
     const label = selected?.nombre || 'Cédula de Ciudadanía';
+
     const hidden = document.getElementById('documentTypeId');
     const display = document.getElementById('documentTypeLabel');
     const numberLabel = document.getElementById('documentNumberLabel');
-    const numberInput = document.getElementById('userCedula');
+    const numberInput = document.getElementById('userDocumentNumber');
 
     if (hidden) hidden.value = currentDocumentTypeId ?? '';
     if (display) display.textContent = label;
@@ -304,88 +305,46 @@ async function submitUserForm(e) {
     
     const name = document.getElementById('userName').value.trim();
     const lastName = document.getElementById('userLastName').value.trim();
-    const cedula = document.getElementById('userCedula').value.trim();
-    const tipoDocumentoId = Number(document.getElementById('documentTypeId')?.value || currentDocumentTypeId);
-    const rol = 'member';
-    const estado = 'active';
-    const correo = buildSyntheticEmail(name, lastName, cedula);
-    
-    if (!name || !lastName || !cedula || !tipoDocumentoId || !rol) {
-        showError('Por favor completa todos los campos');
+    const documentNumber = document.getElementById('userDocumentNumber').value.trim();
+    const tipoDocumentoId = document.getElementById('documentTypeId').value;
+    const rol = document.getElementById('userRole').value;
+
+    if (!name || !lastName || !documentNumber || !tipoDocumentoId || !rol) {
+        showError('Por favor, complete todos los campos.');
         return;
     }
-    
-    try {
-        const wasEditing = !!currentUserId;
-        if (wasEditing) {
-            // Editar usuario existente
-            const response = await fetch(
-                `${window.API_BASE}/api/users/${encodeURIComponent(currentUserId)}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        nombre: name, 
-                        apellido: lastName,
-                        tipo_documento_id: tipoDocumentoId,
-                        cedula,
-                        rol,
-                        estado,
-                        fecha_actualizacion: new Date().toISOString()
-                    })
-                }
-            );
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Error actualizando usuario');
-            }
-            console.log('✅ Usuario actualizado');
-        } else {
-            // Crear nuevo usuario
-            const response = await fetch(
-                `${window.SUPABASE_URL}/rest/v1/users`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                        'apikey': window.SUPABASE_ANON_KEY
-                    },
-                    body: JSON.stringify({ 
-                        nombre: name, 
-                        apellido: lastName,
-                        tipo_documento_id: tipoDocumentoId,
-                        cedula,
-                        rol,
-                        correo_electronico: correo,
-                        estado,
-                        fecha_creacion: new Date().toISOString()
-                    })
-                }
-            );
+    const userData = {
+        nombre: name,
+        apellido: lastName,
+        tipo_documento_id: tipoDocumentoId,
+        numero_documento: documentNumber,
+        rol: rol,
+    };
 
+    fetch(`${window.SUPABASE_URL}/rest/v1/users`, {
+        method: currentUserId ? 'PATCH' : 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`,
+            'apikey': window.SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify(userData),
+    })
+        .then((response) => {
             if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Error creando usuario');
+                throw new Error('Error al guardar el usuario');
             }
-            console.log('✅ Usuario creado');
-        }
-        
-        closeUserModal();
-        await loadUsers();
-        
-        if (wasEditing) {
-            showSuccess('Usuario editado correctamente');
-        } else {
-            showSuccess('Usuario creado correctamente');
-        }
-    } catch (error) {
-        console.error('❌ Error guardando usuario:', error);
-        showError('Error al guardar usuario: ' + error.message);
-    }
+            return response.json();
+        })
+        .then(() => {
+            alert('Usuario guardado exitosamente.');
+            location.reload();
+        })
+        .catch((error) => {
+            console.error('Error guardando usuario:', error);
+            alert(`Error al guardar usuario: ${error.message}`);
+        });
 }
 
 function editUser(userId) {
