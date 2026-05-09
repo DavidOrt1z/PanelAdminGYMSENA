@@ -322,7 +322,11 @@ async function submitUserForm(e) {
         rol: rol,
     };
 
-    fetch(`${window.SUPABASE_URL}/rest/v1/users`, {
+    const url = currentUserId
+        ? `${window.SUPABASE_URL}/rest/v1/users?id=eq.${currentUserId}`
+        : `${window.SUPABASE_URL}/rest/v1/users`;
+
+    fetch(url, {
         method: currentUserId ? 'PATCH' : 'POST',
         headers: {
             'Content-Type': 'application/json',
