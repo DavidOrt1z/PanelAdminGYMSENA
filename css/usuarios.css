@@ -86,6 +86,16 @@
     filter: brightness(0) invert(1);
 }
 
+.btn-danger:hover,
+.btn-icon.btn-delete:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.btn-icon.btn-delete:hover svg {
+    stroke: #fff;
+}
+
 .section-card {
     background: linear-gradient(135deg, #111111 0%, #0D0D0D 100%);
     border: 1px solid rgba(207, 207, 207, 0.2);

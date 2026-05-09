@@ -278,7 +278,7 @@ function openUserModal(userId = null) {
         if (user) {
             document.getElementById('userName').value = user.nombre || '';
             document.getElementById('userLastName').value = user.apellido || '';
-            document.getElementById('userCedula').value = user.cedula || '';
+            document.getElementById('userDocumentNumber').value = user.numero_documento || '';
             setDocumentType(user.tipo_documento_id || getDefaultDocumentTypeId());
             if (roleSelect) roleSelect.value = 'member';
         }
@@ -286,7 +286,7 @@ function openUserModal(userId = null) {
         title.textContent = 'Añadir Usuario';
         form.reset();
         document.getElementById('userLastName').value = '';
-        document.getElementById('userCedula').value = '';
+        document.getElementById('userDocumentNumber').value = '';
         setDocumentType(getDefaultDocumentTypeId());
         if (roleSelect) roleSelect.value = 'member';
     }
