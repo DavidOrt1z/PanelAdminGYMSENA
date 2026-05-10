@@ -317,18 +317,13 @@ async function submitUserForm(e) {
     const userData = {
         nombre: name,
         apellido: lastName,
-        tipo_documento_id: Number(tipoDocumentoId),
-        cedula: documentNumber,
+        Id_tipo_documento: tipoDocumentoId,
+        numero_documento: documentNumber,
         rol: rol,
     };
 
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<div class="dot-triangle-loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-
     const url = currentUserId
-        ? `${window.API_BASE}/api/users/${encodeURIComponent(currentUserId)}`
+        ? `${window.SUPABASE_URL}/rest/v1/users?id=eq.${currentUserId}`
         : `${window.SUPABASE_URL}/rest/v1/users`;
 
     fetch(url, {
@@ -340,32 +335,19 @@ async function submitUserForm(e) {
         },
         body: JSON.stringify(userData),
     })
-        .then(async (response) => {
+        .then((response) => {
             if (!response.ok) {
-                let errorMessage = 'Error al guardar el usuario';
-                try {
-                    const errorData = await response.json();
-                    errorMessage = errorData.message || errorMessage;
-                } catch (e) {
-                    // Si no es JSON, mantenemos el mensaje por defecto
-                }
-                throw new Error(errorMessage);
+                throw new Error('Error al guardar el usuario');
             }
-            // Solo intentamos parsear JSON si hay contenido (POST/PATCH en Supabase pueden devolver vacío)
-            const text = await response.text();
-            return text ? JSON.parse(text) : {};
+            return response.json();
         })
         .then(() => {
-            showSuccess(currentUserId ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
+            alert('Usuario guardado exitosamente.');
+            location.reload();
         })
         .catch((error) => {
             console.error('Error guardando usuario:', error);
-            showError(`Error al guardar usuario: ${error.message}`);
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
+            alert(`Error al guardar usuario: ${error.message}`);
         });
 }
 
