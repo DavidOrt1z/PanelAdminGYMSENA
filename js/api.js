@@ -491,8 +491,22 @@ async function getStatistics() {
         const totalUsers       = parseCount(usersRes);
         const totalSlots       = parseCount(slotsRes);
         const todayReservations = parseCount(reservasHoyRes);
-        const recentStaff      = usersRes.ok ? await recentStaffRes.json() : [];
+        const recentStaff      = recentStaffRes.ok ? await recentStaffRes.json() : [];
         const recentReservas   = reservasHoyRes.ok ? await recentReservasRes.json() : [];
+        
+        // Enriquecer reservas con datos de usuario
+        const userIds = [...new Set((recentReservas || []).map(r => r.id_usuario).filter(Boolean))];
+        let usersMap = new Map();
+        if (userIds.length > 0) {
+            const usersRes = await fetch(
+                `${window.SUPABASE_URL}/rest/v1/users?id=in.(${userIds.join(',')})&select=id,nombre,apellido,correo_electronico`,
+                { headers }
+            );
+            if (usersRes.ok) {
+                const usersData = await usersRes.json();
+                usersMap = new Map(usersData.map(u => [u.id, u]));
+            }
+        }
 
         // Construir actividad reciente
         const activities = [];
@@ -520,10 +534,17 @@ async function getStatistics() {
         };
 
         (Array.isArray(recentReservas) ? recentReservas : []).forEach(r => {
+            const user = usersMap.get(r.id_usuario);
+            let userDisplay = 'N/A';
+            if (user) {
+                userDisplay = user.nombre 
+                    ? `${user.nombre}${user.apellido ? ' ' + user.apellido : ''}`
+                    : (user.correo_electronico || 'N/A');
+            }
             activities.push({
                 tipo: 'Reserva',
                 descripcion: `Reserva ${mapReservationStatusToEs(r.estado)}`,
-                usuario: r.id_usuario,
+                usuario: userDisplay,
                 fecha: r.fecha_creacion
             });
         });
